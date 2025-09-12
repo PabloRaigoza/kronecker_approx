@@ -191,7 +191,7 @@ def test_als_decomp(_A, m1, n1, m2, n2):
     print(f"||propB (x) propC - optB (x) optC||_F = {comp_to_optimal} | Is optimal? {np.isclose(comp_to_optimal, 0)}")
 
 if __name__ == "__main__":
-    l, u = 50, 100
+    l, u = 5, 10
     m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
     m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
     # m1, n1 = (4, 5)
@@ -200,5 +200,5 @@ if __name__ == "__main__":
 
     test_Ax(A, m1, n1, m2, n2)
     test_ATx(A, m1, n1, m2, n2)
-    # test_kron_decomp(A, m1, n1, m2, n2)
+    test_kron_decomp(A, m1, n1, m2, n2)
     test_als_decomp(A, m1, n1, m2, n2)
