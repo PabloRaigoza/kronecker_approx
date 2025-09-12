@@ -59,15 +59,6 @@ def construct_A_tilde(_A, m1, n1, m2, n2):
             A_tilde[j*m1 + i] = vec(Aij(_A, i, j, m1, n1, m2, n2))
     return A_tilde
 
-def reconstruct_test(_A, m1, n1, m2, n2, A_tilde=None):
-    if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
-    A_reconstructed = np.zeros((m1*m2, n1*n2))
-    for i in range(n1):
-        for j in range(n2):
-            A_reconstructed[:, i*n2 + j] = vec(Aij(A_tilde, i, j, m1, n1, m2, n2, True).T)
-    print(f"A_reconstructed:\n{A_reconstructed}\n")
-    print(f"A == A_reconstructed: {np.allclose(_A, A_reconstructed)}\n")
-
 def kron_decomp(_A, m1, n1, m2, n2):
     '''
     A: matrix of size (m1*m2, n1*n2)
@@ -154,7 +145,7 @@ def als_decomp(_A, m1, n1, m2, n2):
 def test_Ax(_A, m1, n1, m2, n2, A_tilde=None):
     print('======== Testing Ax ========')
     if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
-    x = np.arange(m2*n2)
+    x = np.random.rand(m2*n2)
     y1 = Ax(_A, x, m1, n1, m2, n2)
     y2 = A_tilde @ x
     print(f"Ax == A_tilde @ x: {np.allclose(y1, y2)}")
@@ -162,11 +153,19 @@ def test_Ax(_A, m1, n1, m2, n2, A_tilde=None):
 def test_ATx(_A, m1, n1, m2, n2, A_tilde=None):
     print('======== Testing ATx ========')
     if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
-    x = np.arange(m1*n1)
+    x = np.random.rand(m1*n1)
     y1 = ATx(_A, x, m1, n1, m2, n2)
     y2 = A_tilde.T @ x
     print(f"ATx == A_tilde.T @ y2: {np.allclose(y1, y2)}")
 
+def reconstruct_test(_A, m1, n1, m2, n2, A_tilde=None):
+    print('======== Testing Reconstruction ========')
+    if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
+    A_reconstructed = np.zeros((m1*m2, n1*n2))
+    for i in range(n1):
+        for j in range(n2):
+            A_reconstructed[:, i*n2 + j] = vec(Aij(A_tilde, i, j, m1, n1, m2, n2, True).T)
+    print(f"A == A_reconstructed: {np.allclose(_A, A_reconstructed)}")
 
 def test_kron_decomp(_A, m1, n1, m2, n2, A_tilde=None):
     print('======== Testing SVD Decomposition ========')
@@ -191,14 +190,13 @@ def test_als_decomp(_A, m1, n1, m2, n2):
     print(f"||propB (x) propC - optB (x) optC||_F = {comp_to_optimal} | Is optimal? {np.isclose(comp_to_optimal, 0)}")
 
 if __name__ == "__main__":
-    l, u = 5, 10
+    l, u = 2, 5
     m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
     m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
-    # m1, n1 = (4, 5)
-    # m2, n2 = (4, 4)
     A = np.random.rand(m1*m2, n1*n2)
 
     test_Ax(A, m1, n1, m2, n2)
     test_ATx(A, m1, n1, m2, n2)
+    reconstruct_test(A, m1, n1, m2, n2)
     test_kron_decomp(A, m1, n1, m2, n2)
     test_als_decomp(A, m1, n1, m2, n2)
