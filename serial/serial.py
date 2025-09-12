@@ -59,7 +59,7 @@ def construct_A_tilde(_A, m1, n1, m2, n2):
             A_tilde[j*m1 + i] = vec(Aij(_A, i, j, m1, n1, m2, n2))
     return A_tilde
 
-def kron_decomp(_A, m1, n1, m2, n2):
+def svd_decomp(_A, m1, n1, m2, n2):
     '''
     A: matrix of size (m1*m2, n1*n2)
     return B, C where B is of size (m1, n1) and C is of size (m2, n2)
@@ -167,10 +167,10 @@ def reconstruct_test(_A, m1, n1, m2, n2, A_tilde=None):
             A_reconstructed[:, i*n2 + j] = vec(Aij(A_tilde, i, j, m1, n1, m2, n2, True).T)
     print(f"A == A_reconstructed: {np.allclose(_A, A_reconstructed)}")
 
-def test_kron_decomp(_A, m1, n1, m2, n2, A_tilde=None):
+def test_svd_decomp(_A, m1, n1, m2, n2, A_tilde=None):
     print('======== Testing SVD Decomposition ========')
     if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
-    propB, propC = kron_decomp(_A, m1, n1, m2, n2)
+    propB, propC = svd_decomp(_A, m1, n1, m2, n2)
     optU, opts, optVt = np.linalg.svd(A_tilde)
     optB = opts[0] * unVec(optU[:, 0], m1, n1)
     optC = unVec(optVt.T[:, 0], m2, n2)
@@ -198,5 +198,5 @@ if __name__ == "__main__":
     test_Ax(A, m1, n1, m2, n2)
     test_ATx(A, m1, n1, m2, n2)
     reconstruct_test(A, m1, n1, m2, n2)
-    test_kron_decomp(A, m1, n1, m2, n2)
+    test_svd_decomp(A, m1, n1, m2, n2)
     test_als_decomp(A, m1, n1, m2, n2)
