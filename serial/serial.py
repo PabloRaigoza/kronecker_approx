@@ -72,10 +72,12 @@ def kron_decomp(_A, m1, n1, m2, n2):
     '''
     A: matrix of size (m1*m2, n1*n2)
     return B, C where B is of size (m1, n1) and C is of size (m2, n2)
+    maxit looks like it should be n1*n2
+    https://math.ecnu.edu.cn/~jypan/Teaching/books/2013%20Matrix%20Computations%204th.pdf
+    p597
     '''
-    # maxit = 100 # I think should be n1*n2
-    # maxit = n1*n2+1
-    maxit = 5000
+    # maxit = n1*n2
+    maxit = max(2000, n1*n2)
     V = np.zeros((m2*n2, maxit))
     U = np.zeros((m1*n1, maxit))
     Beta = np.zeros(maxit)
@@ -89,7 +91,7 @@ def kron_decomp(_A, m1, n1, m2, n2):
     Beta[0] = 1
     j = 0
 
-    while not np.isclose(Beta[j], 0):
+    while not np.isclose(Beta[j], 0, atol=1e-2):
         V[:, j+1] = P[:, j] / Beta[j]
         j += 1
         R[:, j] = Ax(_A, V[:, j], m1, n1, m2, n2) - Beta[j-1] * U[:, j-1]
@@ -103,9 +105,12 @@ def kron_decomp(_A, m1, n1, m2, n2):
         Beta[j] = np.linalg.norm(P[:, j])
 
         if j >= maxit - 1:
-            print('I dont think this should happen')
+            if j > n1*n2:
+                print('Exceeding n1*n2 iterations')
+            print('Breaking early')
             break
-    print(f'Beta[{j}]: {Beta[j]}')
+    print(f'Beta[{j}]: {Beta[j]} | min(Beta): {np.min(Beta[1:j+1])} @ {np.argmin(Beta[1:j+1])+1}')
+    j = np.argmin(Beta[1:j+1])+1
 
     U = U[:, 1:j+1]
     V = V[:, 1:j+1]
@@ -186,14 +191,14 @@ def test_als_decomp(_A, m1, n1, m2, n2):
     print(f"||propB (x) propC - optB (x) optC||_F = {comp_to_optimal} | Is optimal? {np.isclose(comp_to_optimal, 0)}")
 
 if __name__ == "__main__":
-    # l, u = 4, 5
-    # m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
-    # m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
-    m1, n1 = (4, 5)
-    m2, n2 = (4, 4)
+    l, u = 50, 100
+    m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
+    m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
+    # m1, n1 = (4, 5)
+    # m2, n2 = (4, 4)
     A = np.random.rand(m1*m2, n1*n2)
 
     test_Ax(A, m1, n1, m2, n2)
     test_ATx(A, m1, n1, m2, n2)
-    test_kron_decomp(A, m1, n1, m2, n2)
+    # test_kron_decomp(A, m1, n1, m2, n2)
     test_als_decomp(A, m1, n1, m2, n2)
