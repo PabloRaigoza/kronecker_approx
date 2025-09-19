@@ -1,5 +1,6 @@
 from tqdm import tqdm
 import numpy as np
+from scipy.linalg import svd
 
 def Aij(_A, i, j, m1, n1, m2, n2, is_tilde=False):
     '''
@@ -85,6 +86,19 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
     j = 0
 
     yk_old = None
+
+    stats = {
+        'num_iters': 0,
+        'converged': False,
+        'optimal': False,
+        'iters_for_ritz_conv': 0,
+        'iters_for_res_conv': 0,
+        'condition_number_A_local': 0,
+        'condition_number_A_global': 0,
+        'condition_number_A_tilde_local': 0,
+        'condition_number_A_tilde_global': 0,
+        'rel_error': 0
+    }
     while (not (np.isclose(Beta[j], 0, atol=1e-2))) and Beta[j] > 1e-10:
     # while Beta[j] > 1e-10:
         V[:, j+1] = P[:, j] / Beta[j]
@@ -106,7 +120,8 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
             Bk[i, i] = Alpha[i+1]
             if i < j - 1:
                 Bk[i, i+1] = Beta[i+1]
-        Fk, s_vals, Vh = np.linalg.svd(Bk, full_matrices=False)
+        # Fk, s_vals, Vh = np.linalg.svd(Bk, full_matrices=False)
+        Fk, s_vals, Vh = svd(Bk, full_matrices=False)
         Gk = Vh.T
         gamma1 = s_vals[0]           # dominant singular value (positive)
         g1 = Gk[:, 0]                # small-space right singular vector
@@ -125,6 +140,8 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
             if yk_converged:
                 if debug: print('Converged based on Ritz vector angle')
                 # break
+            else:
+                stats['iters_for_ritz_conv'] += 1
 
             # r = A.dot(yk) - gamma1 * zk
             r = Ax(_A, yk, m1, n1, m2, n2) - gamma1 * zk
@@ -135,6 +152,8 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
             if res_converged and yk_converged:
                 if debug: print('Converged based on residual norm')
                 break
+            else:
+                stats['iters_for_res_conv'] += 1
         yk_old = yk
 
         # normalize (should already be unit but numerical guard)
@@ -165,7 +184,25 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
     B = s[0] * unVec(U @ Ub[:, 0], m1, n1)
     C = unVec(V @ Vbt.T[:, 0], m2, n2)
 
-    return B, C
+    stats['num_iters'] = j
+    stats['converged'] = j < maxit - 1
+
+    A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
+    optU, opts, optVt = np.linalg.svd(A_tilde)
+    optB = opts[0] * unVec(optU[:, 0], m1, n1)
+    optC = unVec(optVt.T[:, 0], m2, n2)
+    comp_to_optimal = np.linalg.norm(np.kron(B, C) - np.kron(optB, optC))
+    stats['rel_error'] = comp_to_optimal
+    if np.isclose(comp_to_optimal, 0, atol=1e-5):
+        stats['optimal'] = True
+    s_vals = np.linalg.svd(_A, compute_uv=False)
+    stats['condition_number_A_local'] = s_vals[0] / s_vals[-1]
+    stats['condition_number_A_global'] = s_vals[0] / s_vals[1]
+    stats['condition_number_A_tilde_local'] = opts[0] / opts[-1]
+    stats['condition_number_A_tilde_global'] = opts[0] / opts[1]
+    # return B, C
+
+    return stats
 
 def als_decomp(_A, m1, n1, m2, n2):
     '''
