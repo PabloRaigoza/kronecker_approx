@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import numpy as np
 
 def Aij(_A, i, j, m1, n1, m2, n2, is_tilde=False):
@@ -59,7 +60,7 @@ def construct_A_tilde(_A, m1, n1, m2, n2):
             A_tilde[j*m1 + i] = vec(Aij(_A, i, j, m1, n1, m2, n2))
     return A_tilde
 
-def svd_decomp(_A, m1, n1, m2, n2):
+def svd_decomp(_A, m1, n1, m2, n2, debug=False):
     '''
     A: matrix of size (m1*m2, n1*n2)
     return B, C where B is of size (m1, n1) and C is of size (m2, n2)
@@ -68,7 +69,8 @@ def svd_decomp(_A, m1, n1, m2, n2):
     p597
     '''
     # maxit = n1*n2
-    maxit = max(2000, n1*n2)
+    # maxit = max(2000, n1*n2)
+    maxit = min(m1*n1, m2*n2)
     V = np.zeros((m2*n2, maxit))
     U = np.zeros((m1*n1, maxit))
     Beta = np.zeros(maxit)
@@ -82,7 +84,9 @@ def svd_decomp(_A, m1, n1, m2, n2):
     Beta[0] = 1
     j = 0
 
-    while not np.isclose(Beta[j], 0, atol=1e-2):
+    yk_old = None
+    while (not (np.isclose(Beta[j], 0, atol=1e-2))) and Beta[j] > 1e-10:
+    # while Beta[j] > 1e-10:
         V[:, j+1] = P[:, j] / Beta[j]
         j += 1
         R[:, j] = Ax(_A, V[:, j], m1, n1, m2, n2) - Beta[j-1] * U[:, j-1]
@@ -95,13 +99,54 @@ def svd_decomp(_A, m1, n1, m2, n2):
         P[:, j] = ATx(_A, U[:, j], m1, n1, m2, n2) - Alpha[j] * V[:, j]
         Beta[j] = np.linalg.norm(P[:, j])
 
+
+
+        Bk = np.zeros((j, j))
+        for i in range(j):
+            Bk[i, i] = Alpha[i+1]
+            if i < j - 1:
+                Bk[i, i+1] = Beta[i+1]
+        Fk, s_vals, Vh = np.linalg.svd(Bk, full_matrices=False)
+        Gk = Vh.T
+        gamma1 = s_vals[0]           # dominant singular value (positive)
+        g1 = Gk[:, 0]                # small-space right singular vector
+        f1 = Fk[:, 0]                # small-space left singular vector
+
+        # lift to full space
+        if debug:
+            print(f'Iteration {j} | V.shape: {V[:, 1:j+1].shape} | g1.shape: {g1.shape} | U.shape: {U[:, 1:j+1].shape} | f1.shape: {f1.shape}')
+        yk = V[:, 1:j+1] @ g1   # right Ritz vector in original n-dim space
+        zk = U[:, 1:j+1] @ f1   # left Ritz vector
+
+        if yk_old is not None:
+            cos_angle = np.dot(yk_old.flatten(), yk.flatten()) / (np.linalg.norm(yk_old) * np.linalg.norm(yk))
+            if debug: print(f'Cosine angle between successive yk: {cos_angle}')
+            yk_converged = np.isclose(1 - np.abs(cos_angle), 0)
+            if yk_converged:
+                if debug: print('Converged based on Ritz vector angle')
+                # break
+
+            # r = A.dot(yk) - gamma1 * zk
+            r = Ax(_A, yk, m1, n1, m2, n2) - gamma1 * zk
+            res_norm = np.linalg.norm(r)
+            tol_res = 1e-8
+            if debug: print(f'Iteration {j} | gamma1: {gamma1} | Residual norm: {res_norm} | Tolerance: {tol_res * max(1.0, abs(gamma1))}')
+            res_converged = (res_norm <= tol_res * max(1.0, abs(gamma1)))
+            if res_converged and yk_converged:
+                if debug: print('Converged based on residual norm')
+                break
+        yk_old = yk
+
+        # normalize (should already be unit but numerical guard)
+        yk = yk / np.linalg.norm(yk)
+        zk = zk / np.linalg.norm(zk)
+
         if j >= maxit - 1:
-            if j > n1*n2:
-                print('Exceeding n1*n2 iterations')
-            print('Breaking early')
+            if debug: print('Reached max iterations')
             break
-    print(f'Beta[{j}]: {Beta[j]} | min(Beta): {np.min(Beta[1:j+1])} @ {np.argmin(Beta[1:j+1])+1}')
-    j = np.argmin(Beta[1:j+1])+1
+    if debug:
+        print(f'Beta[{j}]: {Beta[j]} | min(Beta): {np.min(Beta[1:j+1])} @ {np.argmin(Beta[1:j+1])+1}')
+    # j = np.argmin(Beta[1:j+1])+1
 
     U = U[:, 1:j+1]
     V = V[:, 1:j+1]
@@ -170,7 +215,7 @@ def reconstruct_test(_A, m1, n1, m2, n2, A_tilde=None):
 def test_svd_decomp(_A, m1, n1, m2, n2, A_tilde=None):
     print('======== Testing SVD Decomposition ========')
     if A_tilde is None: A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
-    propB, propC = svd_decomp(_A, m1, n1, m2, n2)
+    propB, propC = svd_decomp(_A, m1, n1, m2, n2, debug=True)
     optU, opts, optVt = np.linalg.svd(A_tilde)
     optB = opts[0] * unVec(optU[:, 0], m1, n1)
     optC = unVec(optVt.T[:, 0], m2, n2)
@@ -189,14 +234,34 @@ def test_als_decomp(_A, m1, n1, m2, n2):
     print(f"||A - propB (x) propC||_F = {np.linalg.norm(_A - np.kron(propB, propC))}")
     print(f"||propB (x) propC - optB (x) optC||_F = {comp_to_optimal} | Is optimal? {np.isclose(comp_to_optimal, 0)}")
 
+def test_full_svd_approach(num_tests=10):
+    num_success = 0
+    for _ in tqdm(range(num_tests)):
+        l, u = 50, 100
+        m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
+        m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
+        _A = np.random.rand(m1*m2, n1*n2)
+        
+        A_tilde = construct_A_tilde(_A, m1, n1, m2, n2)
+        propB, propC = svd_decomp(_A, m1, n1, m2, n2)
+        optU, opts, optVt = np.linalg.svd(A_tilde)
+        optB = opts[0] * unVec(optU[:, 0], m1, n1)
+        optC = unVec(optVt.T[:, 0], m2, n2)
+        comp_to_optimal = np.linalg.norm(np.kron(propB, propC) - np.kron(optB, optC))
+        if np.isclose(comp_to_optimal, 0, atol=1e-5):
+            num_success += 1
+    print(f'Success rate of SVD approach: {num_success}/{num_tests} = {num_success/num_tests*100}%')
 if __name__ == "__main__":
-    l, u = 2, 5
-    m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
-    m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
-    A = np.random.rand(m1*m2, n1*n2)
 
-    test_Ax(A, m1, n1, m2, n2)
-    test_ATx(A, m1, n1, m2, n2)
-    reconstruct_test(A, m1, n1, m2, n2)
-    test_svd_decomp(A, m1, n1, m2, n2)
-    test_als_decomp(A, m1, n1, m2, n2)
+    # l, u = 20, 50
+    # m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
+    # m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
+    # A = np.random.rand(m1*m2, n1*n2)
+
+    # test_Ax(A, m1, n1, m2, n2)
+    # test_ATx(A, m1, n1, m2, n2)
+    # reconstruct_test(A, m1, n1, m2, n2)
+    # test_als_decomp(A, m1, n1, m2, n2)
+
+    # test_svd_decomp(A, m1, n1, m2, n2)
+    test_full_svd_approach(100)

@@ -6,3 +6,4 @@ Implementation of algorithms in: https://scispace.com/pdf/approximation-with-kro
 
 ## Requirements
 - Numpy
+- Tqdm (for visualization)
