@@ -66,20 +66,6 @@ def benchmark_svd_approach(cond_num):
     
     stats = svd_decomp(_A, m1, n1, m2, n2)
 
-    # with open('svd_benchmark_results.txt', 'a') as f:
-    #     f.write(f"{m1},{n1},{m2},{n2},{cond_num},{stats['optimal']},{stats['condition_number_A_local']},{stats['condition_number_A_global']},{stats['condition_number_A_tilde_local']},{stats['condition_number_A_tilde_global']}\n")
-    # stats = {
-    #     'num_iters': 0,
-    #     'converged': False,
-    #     'optimal': False,
-    #     'iters_for_ritz_conv': 0,
-    #     'iters_for_res_conv': 0,
-    #     'condition_number_A_local': 0,
-    #     'condition_number_A_global': 0,
-    #     'condition_number_A_tilde_local': 0,
-    #     'condition_number_A_tilde_global': 0,
-    #     'rel_error': 0
-    # }
     with open('svd_benchmark_results.txt', 'a') as f:
         f.write(f"{m1},{n1},{m2},{n2},{cond_num},{stats['num_iters']},{stats['converged']},{stats['optimal']},{stats['iters_for_ritz_conv']},{stats['iters_for_res_conv']},{stats['condition_number_A_local']},{stats['condition_number_A_global']},{stats['condition_number_A_tilde_local']},{stats['condition_number_A_tilde_global']},{stats['rel_error']}\n")
 
