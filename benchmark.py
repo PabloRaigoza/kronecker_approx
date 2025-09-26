@@ -58,7 +58,7 @@ def gen_A_tilde_condition(m1, n1, m2, n2, cond_num):
 # gen_A_tilde_condition(4,5,6,7,10)
 
 def benchmark_svd_approach(cond_num):
-    l, u = 10, 50
+    l, u = 10, 12
     m1, n1 = np.random.randint(l, u), np.random.randint(l, u)
     m2, n2 = np.random.randint(l, u), np.random.randint(l, u)
     print(f"Benchmarking SVD approach for condition number {cond_num} with matrix size ({m1*m2}, {n1*n2})")
@@ -76,8 +76,10 @@ if __name__ == "__main__":
     condition_numbers = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000]
 
     # with Pool(processes=cpu_count()) as pool:
-    with Pool(processes=min(len(condition_numbers), cpu_count())) as pool:
-        pool.map(benchmark_svd_approach, condition_numbers)
+    # with Pool(processes=min(len(condition_numbers), cpu_count())) as pool:
+    #     pool.map(benchmark_svd_approach, condition_numbers)
 
-    # for cond_num in condition_numbers:
-    #     benchmark_svd_approach(cond_num)
+    for cond_num in condition_numbers:
+        benchmark_svd_approach(cond_num)
+
+        [(1,10), (1,20), (1,30), (1,40), (1,50), (1.2,10), (1.2,20), (1.2,30), (1.2,40), (1.2,50), (1.4,10), (1.4,20), (1.4,30), (1.4,40), (1.4,50), (1.6,10), (1.6,20), (1.6,30), (1.6,40), (1.6,50), (1.8,10), (1.8,20), (1.8,30), (1.8,40), (1.8,50), (2,10), (2,20), (2,30), (2,40), (2,50)]

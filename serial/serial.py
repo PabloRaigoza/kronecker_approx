@@ -200,6 +200,7 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
     stats['condition_number_A_global'] = s_vals[0] / s_vals[1]
     stats['condition_number_A_tilde_local'] = opts[0] / opts[-1]
     stats['condition_number_A_tilde_global'] = opts[0] / opts[1]
+    # print(f"SVD approach stats: {stats}")
     # return B, C
 
     return stats
@@ -290,15 +291,15 @@ def test_full_svd_approach(num_tests=10):
     print(f'Success rate of SVD approach: {num_success}/{num_tests} = {num_success/num_tests*100}%')
 if __name__ == "__main__":
 
-    # l, u = 20, 50
-    # m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
-    # m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
-    # A = np.random.rand(m1*m2, n1*n2)
+    l, u = 10, 50
+    m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
+    m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
+    A = np.random.rand(m1*m2, n1*n2)
 
     # test_Ax(A, m1, n1, m2, n2)
     # test_ATx(A, m1, n1, m2, n2)
     # reconstruct_test(A, m1, n1, m2, n2)
     # test_als_decomp(A, m1, n1, m2, n2)
 
-    # test_svd_decomp(A, m1, n1, m2, n2)
-    test_full_svd_approach(100)
+    test_svd_decomp(A, m1, n1, m2, n2)
+    # test_full_svd_approach(100)
