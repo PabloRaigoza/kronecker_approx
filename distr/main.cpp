@@ -14,6 +14,8 @@
 #include "bcp/bcp_kernel.h"
 #include "bcp/bcp_bidiag.h"
 
+#define NUM_TRIALS 5
+
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
     srand((unsigned)time(NULL));
@@ -29,35 +31,28 @@ int main(int argc, char **argv) {
     m2 = atoi(argv[3]);
     n2 = atoi(argv[4]);
     const char *op = argv[5];
+    const char *alg_str = argv[6];
 
-    // WBPContext ctx = wbp_distribute(world_rank, world_size, m1, n1, m2, n2);
-    // if (strcmp(op, "Ax") == 0) wbp_ax(&ctx, 10, false);
-    // else if (strcmp(op, "ATx") == 0) wbp_atx(&ctx, 10, false);
-    // wbp_verify(&ctx);
-    // free_wbp_context(&ctx);
-
-    // RRPContext ctx = rrp_distribute(world_rank, world_size, m1, n1, m2, n2);
-    // if (strcmp(op, "Ax") == 0) rrp_ax(&ctx, 1, false);
-    // else if (strcmp(op, "ATx") == 0) rrp_atx(&ctx, 1, false);
-    // rrp_verify(&ctx);
-    // rrp_free_context(&ctx);
-
-    BCPContext ctx = bcp_distribute(world_rank, world_size, m1, n1, m2, n2);
-    if (strcmp(op, "Ax") == 0) bcp_ax(&ctx, 1, false);
-    else if (strcmp(op, "ATx") == 0) bcp_atx(&ctx, 1, false);
-
-
-    // Set ctx->u_send to your starting vector b on each rank
-    // (the BCP-distributed slice of b)
-
-    BCPBidiagResult r = bcp_bidiagonalize_full(&ctx, /*k=*/50,
-                                                /*reorthogonalize=*/true);
-    // if (ctx.world_rank == 0)
-    //     bcp_print_bidiag_result(r);
-    bcp_verify_bidiag(&ctx, 50);
-
-    // bcp_verify(&ctx);
-    bcp_free_context(&ctx);
+    // check alg_string
+    if (strcmp(alg_str, "wbp")) {
+        WBPContext ctx = wbp_distribute(world_rank, world_size, m1, n1, m2, n2);
+        if (strcmp(op, "Ax") == 0) wbp_ax(&ctx, NUM_TRIALS, false);
+        else if (strcmp(op, "ATx") == 0) wbp_atx(&ctx, NUM_TRIALS, false);
+        // wbp_verify(&ctx);
+        wbp_free_context(&ctx);
+    } else if (strcmp(alg_str, "rrp")) {
+        RRPContext ctx = rrp_distribute(world_rank, world_size, m1, n1, m2, n2);
+        if (strcmp(op, "Ax") == 0) rrp_ax(&ctx, NUM_TRIALS, false);
+        else if (strcmp(op, "ATx") == 0) rrp_atx(&ctx, NUM_TRIALS, false);
+        // rrp_verify(&ctx);
+        rrp_free_context(&ctx);
+    } else if (strcmp(alg_str, "bcp")) {
+        BCPContext ctx = bcp_distribute(world_rank, world_size, m1, n1, m2, n2);
+        if (strcmp(op, "Ax") == 0) bcp_ax(&ctx, NUM_TRIALS, false);
+        else if (strcmp(op, "ATx") == 0) bcp_atx(&ctx, NUM_TRIALS, false);
+        // bcp_verify(&ctx);
+        bcp_free_context(&ctx);
+    }
 
     MPI_Finalize();
     return 0;
