@@ -34,19 +34,19 @@ int main(int argc, char **argv) {
     const char *alg_str = argv[6];
 
     // check alg_string
-    if (strcmp(alg_str, "wbp")) {
+    if (strcmp(alg_str, "wbp") == 0) {
         WBPContext ctx = wbp_distribute(world_rank, world_size, m1, n1, m2, n2);
         if (strcmp(op, "Ax") == 0) wbp_ax(&ctx, NUM_TRIALS, false);
         else if (strcmp(op, "ATx") == 0) wbp_atx(&ctx, NUM_TRIALS, false);
         // wbp_verify(&ctx);
         wbp_free_context(&ctx);
-    } else if (strcmp(alg_str, "rrp")) {
+    } else if (strcmp(alg_str, "rrp") == 0) {
         RRPContext ctx = rrp_distribute(world_rank, world_size, m1, n1, m2, n2);
         if (strcmp(op, "Ax") == 0) rrp_ax(&ctx, NUM_TRIALS, false);
         else if (strcmp(op, "ATx") == 0) rrp_atx(&ctx, NUM_TRIALS, false);
         // rrp_verify(&ctx);
         rrp_free_context(&ctx);
-    } else if (strcmp(alg_str, "bcp")) {
+    } else if (strcmp(alg_str, "bcp") == 0) {
         BCPContext ctx = bcp_distribute(world_rank, world_size, m1, n1, m2, n2);
         if (strcmp(op, "Ax") == 0) bcp_ax(&ctx, NUM_TRIALS, false);
         else if (strcmp(op, "ATx") == 0) bcp_atx(&ctx, NUM_TRIALS, false);
