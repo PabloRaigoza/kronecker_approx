@@ -289,17 +289,70 @@ def test_full_svd_approach(num_tests=10):
         if np.isclose(comp_to_optimal, 0, atol=1e-5):
             num_success += 1
     print(f'Success rate of SVD approach: {num_success}/{num_tests} = {num_success/num_tests*100}%')
+    
+def init_sol_kron_approx(A, m1, n1, m2, n2, b):
+    # solve kron(B, C) @ x = b
+    # then use x as starting point for regular GMRES
+    A_tilde = construct_A_tilde(A, m1, n1, m2, n2)
+    optU, opts, optVt = np.linalg.svd(A_tilde)
+    optB = opts[0] * unVec(optU[:, 0], m1, n1)
+    optC = unVec(optVt.T[:, 0], m2, n2)
+    
+    # solve kron(B, C) @ x = b
+    # kron(B, C) @ x = (C.T @ X @ B.T).flatten() where X is the unVec of x
+    # so we can reshape b to (m1, n1) and then solve C.T @ X @ B.T = b_reshaped for X
+    # we can solve C.T @ X @ B.T = b_reshaped by first solving C.T @ Y = b_reshaped for Y and then solving X @ B.T = Y for X
+    # Solve C^T Y ≈ Bmat  (least squares)
+    # reshape b correctly
+    Bmat = unVec(b, m1, m2)  # <--- correct
+
+    # Solve C^T Y ≈ Bmat
+    Y, *_ = np.linalg.lstsq(optC.T, Bmat, rcond=None)  # use C^T
+
+    # Solve X B^T ≈ Y
+    X_T, *_ = np.linalg.lstsq(optB, Y.T, rcond=None)
+    X = X_T.T
+
+    x = vec(X)
+
+    # solve A @ x = b using GMRES with x as initial guess
+    from scipy.sparse.linalg import gmres, LinearOperator
+
+    def matvec(v):
+        return A @ v
+
+    A_op = LinearOperator(
+        shape=(m1*m2, n1*n2),
+        matvec=matvec
+    )
+
+    x1_gmres, info = gmres(A_op, b, x0=x)
+    x2_gmres, info = gmres(A_op, b)
+    
+    # optimal solution using np.linalg.solve
+    x_optimal = np.linalg.solve(A, b)
+    
+    # compare solution of x1 and x2
+    print(f"||A @ x1_gmres - b||: {np.linalg.norm(A @ x1_gmres - b)} | ||A @ x2_gmres - b||: {np.linalg.norm(A @ x2_gmres - b)} | Is x1_gmres better than x2_gmres? {np.linalg.norm(A @ x1_gmres - b) < np.linalg.norm(A @ x2_gmres - b)}")
+    print(f"||x1_gmres - x_optimal||: {np.linalg.norm(x1_gmres - x_optimal)} | ||x2_gmres - x_optimal||: {np.linalg.norm(x2_gmres - x_optimal)} | Is x1_gmres closer to optimal than x2_gmres? {np.linalg.norm(x1_gmres - x_optimal) < np.linalg.norm(x2_gmres - x_optimal)}")
+    
+    
+    # Compare quality of solution from kron approximation vs GMRES
+    
+    
 if __name__ == "__main__":
 
-    l, u = 10, 50
+    l, u = 10, 11
     m1, n1 = (np.random.randint(l, u), np.random.randint(l, u))
     m2, n2 = (np.random.randint(l, u), np.random.randint(l, u))
     A = np.random.rand(m1*m2, n1*n2)
+
+    init_sol_kron_approx(A, m1, n1, m2, n2, np.random.rand(m1*m2))
 
     # test_Ax(A, m1, n1, m2, n2)
     # test_ATx(A, m1, n1, m2, n2)
     # reconstruct_test(A, m1, n1, m2, n2)
     # test_als_decomp(A, m1, n1, m2, n2)
 
-    test_svd_decomp(A, m1, n1, m2, n2)
+    # test_svd_decomp(A, m1, n1, m2, n2)
     # test_full_svd_approach(100)

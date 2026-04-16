@@ -12,6 +12,7 @@
 #include "rrp/rrp_kernel.h"
 #include "bcp/bcp_distr.h"
 #include "bcp/bcp_kernel.h"
+#include "bcp/bcp_bidiag.h"
 
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
@@ -44,7 +45,18 @@ int main(int argc, char **argv) {
     BCPContext ctx = bcp_distribute(world_rank, world_size, m1, n1, m2, n2);
     if (strcmp(op, "Ax") == 0) bcp_ax(&ctx, 1, false);
     else if (strcmp(op, "ATx") == 0) bcp_atx(&ctx, 1, false);
-    bcp_verify(&ctx);
+
+
+    // Set ctx->u_send to your starting vector b on each rank
+    // (the BCP-distributed slice of b)
+
+    BCPBidiagResult r = bcp_bidiagonalize_full(&ctx, /*k=*/50,
+                                                /*reorthogonalize=*/true);
+    // if (ctx.world_rank == 0)
+    //     bcp_print_bidiag_result(r);
+    bcp_verify_bidiag(&ctx, 50);
+
+    // bcp_verify(&ctx);
     bcp_free_context(&ctx);
 
     MPI_Finalize();

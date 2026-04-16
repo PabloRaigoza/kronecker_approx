@@ -170,11 +170,11 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     for (size_t i = 0; i < (size_t)ctx.v_send_size; i++) ctx.v_send[i] = (double)world_rank;
     for (size_t i = 0; i < (size_t)ctx.u_send_size; i++) ctx.u_send[i] = (double)world_rank;
 
-    for (size_t i = 0; i < ctx.A_local_size; i++) ctx.A_local[i] = (double)rand() / RAND_MAX;
-    for (size_t i = 0; i < (size_t)ctx.v_recv_size; i++) ctx.v_recv[i] = (double)rand() / RAND_MAX;
-    for (size_t i = 0; i < (size_t)ctx.u_recv_size; i++) ctx.u_recv[i] = (double)rand() / RAND_MAX;
-    for (size_t i = 0; i < (size_t)ctx.v_send_size; i++) ctx.v_send[i] = (double)rand() / RAND_MAX;
-    for (size_t i = 0; i < (size_t)ctx.u_send_size; i++) ctx.u_send[i] = (double)rand() / RAND_MAX;
+    // for (size_t i = 0; i < ctx.A_local_size; i++) ctx.A_local[i] = (double)rand() / RAND_MAX;
+    // for (size_t i = 0; i < (size_t)ctx.v_recv_size; i++) ctx.v_recv[i] = (double)rand() / RAND_MAX;
+    // for (size_t i = 0; i < (size_t)ctx.u_recv_size; i++) ctx.u_recv[i] = (double)rand() / RAND_MAX;
+    // for (size_t i = 0; i < (size_t)ctx.v_send_size; i++) ctx.v_send[i] = (double)rand() / RAND_MAX;
+    // for (size_t i = 0; i < (size_t)ctx.u_send_size; i++) ctx.u_send[i] = (double)rand() / RAND_MAX;
 
     find_revcounts_displs(ctx.v_send_size, ctx.v_size, &ctx.recvcounts_v, &ctx.displs_v, ctx.v_comm);
     find_revcounts_displs(ctx.u_send_size, ctx.u_size, &ctx.recvcounts_u, &ctx.displs_u, ctx.u_comm);
@@ -262,6 +262,8 @@ void bcp_reconstruct_v(double** v_full, BCPContext* ctx) {
 void bcp_reconstruct_u(double** u_full, BCPContext* ctx) {
     if (ctx->world_rank == 0) {
         *u_full = (double*)malloc((size_t)ctx->m1 * (size_t)ctx->n1 * sizeof(double));
+    } else {
+        *u_full = NULL;
     }
 
     MPI_Allgatherv(ctx->u_send, ctx->u_send_size, MPI_DOUBLE,
@@ -270,6 +272,7 @@ void bcp_reconstruct_u(double** u_full, BCPContext* ctx) {
 
     int u_offset_a = 0;
     for (size_t i = 0; i < ctx->n1; i++) {
+        if (i != 0 && ctx->state[i] == ctx->state[i-1]) continue;
         int cur_rank = ctx->state[i][0];
         if (cur_rank == 0 && ctx->world_rank == 0) {
             int data_to_send = ctx->u_recv_size;
@@ -291,6 +294,11 @@ void bcp_reconstruct_u(double** u_full, BCPContext* ctx) {
             }
         }
     }
+}
+
+void bcp_distribute_v(double **v_full, BCPContext* ctx) {
+    // we would like to send the full v to all ranks
+    // Assume v_full is already allocated and filled on rank 0, and NULL on other ranks
 
 }
 
