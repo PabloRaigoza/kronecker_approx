@@ -106,7 +106,7 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     ctx.state.resize(ctx.n1, std::vector<int>(1, 0));
     int num_ranks = 1;
     for (int i = 0; num_ranks < ctx.world_size; i++) {
-        if (i % 2 == 1) bcp_split_each_rank(&ctx, ctx.state, num_ranks);
+        if (i % 3 == 1) bcp_split_each_rank(&ctx, ctx.state, num_ranks);
         else bcp_split_columns(&ctx, ctx.state, num_ranks);
     }
 

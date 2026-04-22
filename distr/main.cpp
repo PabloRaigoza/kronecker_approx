@@ -14,7 +14,7 @@
 #include "bcp/bcp_kernel.h"
 #include "bcp/bcp_bidiag.h"
 
-#define NUM_TRIALS 5
+#define NUM_TRIALS 10
 
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);

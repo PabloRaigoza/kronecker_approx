@@ -1,0 +1,590 @@
+Experiment: 100x100x100x100 1024 Ax ranks wbp
+Mean All Gather: 0.000753 | Mean Computation: 0.000164
+Experiment: 100x100x100x100 1024 ATx ranks wbp
+Mean Computation: 0.000156 | Mean Reduce Scatter: 0.001646
+Experiment: 100x100x100x100 1024 Ax ranks rrp
+Mean All Gather: 0.000224 | Mean Computation: 0.000159 | Mean Reduce Scatter: 0.000214
+Experiment: 100x100x100x100 1024 ATx ranks rrp
+Mean All Gather: 0.000117 | Mean Computation: 0.000152 | Mean Reduce Scatter: 0.000205
+Experiment: 100x100x100x100 1024 Ax ranks bcp
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+MPICH ERROR [Rank 768] [job id 51638642.4] [Thu Apr 16 08:03:01 2026] [nid006703] - Abort(946957967) (rank 768 in comm 0): Fatal error in internal_Comm_split: Other MPI error, error stack:
+internal_Comm_split(86)...................: MPI_Comm_split(MPI_COMM_WORLD, color=0, key=768, newcomm=0x7ffea03b5830) failed
+MPIR_Comm_split_impl(122).................: 
+MPIR_CRAY_Allgather(615)..................: 
+MPID_Gather(938)..........................: 
+MPIDI_Gather_intra_composition_alpha(1294): 
+MPIDI_NM_mpi_gather(129)..................: 
+MPIR_Gather_impl(943).....................: 
+MPIR_Gather_allcomm_auto(883).............: 
+MPIR_Gather_intra_binomial(254)...........: 
+MPIC_Send(134)............................: 
+MPIC_Wait(67).............................: 
+MPIR_Wait_state(896)......................: 
+MPID_Progress_wait(370)...................: 
+MPIDI_progress_test(181)..................: 
+MPIDI_OFI_handle_cq_error(979)............: OFI poll failed (ofi_events.c:981:MPIDI_OFI_handle_cq_error:Input/output error - Text file busy)
+
+aborting job:
+Fatal error in internal_Comm_split: Other MPI error, error stack:
+internal_Comm_split(86)...................: MPI_Comm_split(MPI_COMM_WORLD, color=0, key=768, newcomm=0x7ffea03b5830) failed
+MPIR_Comm_split_impl(122).................: 
+MPIR_CRAY_Allgather(615)..................: 
+MPID_Gather(938)..........................: 
+MPIDI_Gather_intra_composition_alpha(1294): 
+MPIDI_NM_mpi_gather(129)..................: 
+MPIR_Gather_impl(943).....................: 
+MPIR_Gather_allcomm_auto(883).............: 
+MPIR_Gather_intra_binomial(254)...........: 
+MPIC_Send(134)............................: 
+MPIC_Wait(67).............................: 
+MPIR_Wait_state(896)......................: 
+MPID_Progress_wait(370)...................: 
+MPIDI_progress_test(181)..................: 
+MPIDI_OFI_handle_cq_error(979)............: OFI poll failed (ofi_events.c:981:MPIDI_OFI_handle_cq_error:Input/output error - Text file busy)
+srun: error: nid006703: task 768: Exited with exit code 255
+srun: Terminating StepId=51638642.4
+[2026-04-16T15:03:02.885] error: *** STEP 51638642.4 ON nid004334 CANCELLED AT 2026-04-16T15:03:02 DUE TO TASK FAILURE ***
+srun: error: nid006702: tasks 640-743,752-759: Aborted
+srun: error: nid006702: tasks 744-751,760-767: Terminated
+srun: error: nid006333: tasks 512-615,624-631: Aborted
+srun: error: nid006333: tasks 616-623,632-639: Terminated
+srun: error: nid006703: tasks 769-895: Terminated
+srun: error: nid006332: tasks 384-511: Terminated
+srun: error: nid004335: tasks 128-255: Terminated
+srun: error: nid006331: tasks 256-383: Terminated
+srun: error: nid004334: tasks 0-127: Terminated
+srun: error: nid006704: tasks 896-1023: Terminated
+srun: Force Terminated StepId=51638642.4
+Experiment: 100x100x100x100 1024 ATx ranks bcp
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+main: bcp/bcp_distr.h:124: BCPContext bcp_distribute(int, int, int, int, int, int): Assertion `intra_block_index != -1 && inter_block_index != -1' failed.
+MPICH ERROR [Rank 768] [job id 51638642.5] [Thu Apr 16 08:03:11 2026] [nid006703] - Abort(745631375) (rank 768 in comm 0): Fatal error in internal_Comm_split: Other MPI error, error stack:
+internal_Comm_split(86)...................: MPI_Comm_split(MPI_COMM_WORLD, color=0, key=768, newcomm=0x7ffe690564e0) failed
+MPIR_Comm_split_impl(122).................: 
+MPIR_CRAY_Allgather(615)..................: 
+MPID_Gather(938)..........................: 
+MPIDI_Gather_intra_composition_alpha(1294): 
+MPIDI_NM_mpi_gather(129)..................: 
+MPIR_Gather_impl(943).....................: 
+MPIR_Gather_allcomm_auto(883).............: 
+MPIR_Gather_intra_binomial(254)...........: 
+MPIC_Send(134)............................: 
+MPIC_Wait(67).............................: 
+MPIR_Wait_state(896)......................: 
+MPID_Progress_wait(370)...................: 
+MPIDI_progress_test(181)..................: 
+MPIDI_OFI_handle_cq_error(979)............: OFI poll failed (ofi_events.c:981:MPIDI_OFI_handle_cq_error:Input/output error - Text file busy)
+
+aborting job:
+Fatal error in internal_Comm_split: Other MPI error, error stack:
+internal_Comm_split(86)...................: MPI_Comm_split(MPI_COMM_WORLD, color=0, key=768, newcomm=0x7ffe690564e0) failed
+MPIR_Comm_split_impl(122).................: 
+MPIR_CRAY_Allgather(615)..................: 
+MPID_Gather(938)..........................: 
+MPIDI_Gather_intra_composition_alpha(1294): 
+MPIDI_NM_mpi_gather(129)..................: 
+MPIR_Gather_impl(943).....................: 
+MPIR_Gather_allcomm_auto(883).............: 
+MPIR_Gather_intra_binomial(254)...........: 
+MPIC_Send(134)............................: 
+MPIC_Wait(67).............................: 
+MPIR_Wait_state(896)......................: 
+MPID_Progress_wait(370)...................: 
+MPIDI_progress_test(181)..................: 
+MPIDI_OFI_handle_cq_error(979)............: OFI poll failed (ofi_events.c:981:MPIDI_OFI_handle_cq_error:Input/output error - Text file busy)
+srun: error: nid006703: task 768: Exited with exit code 255
+srun: Terminating StepId=51638642.5
+[2026-04-16T15:03:11.989] error: *** STEP 51638642.5 ON nid004334 CANCELLED AT 2026-04-16T15:03:11 DUE TO TASK FAILURE ***
+srun: error: nid006702: tasks 640-743,752-759: Aborted
+srun: error: nid006702: tasks 744-751,760-767: Terminated
+srun: error: nid006333: tasks 512-615,624-631: Aborted
+srun: error: nid006333: tasks 616-623,632-639: Terminated
+srun: error: nid006703: tasks 769-895: Terminated
+srun: error: nid004334: tasks 0-127: Terminated
+srun: error: nid006331: tasks 256-383: Terminated
+srun: error: nid004335: tasks 128-255: Terminated
+srun: error: nid006332: tasks 384-511: Terminated
+srun: error: nid006704: tasks 896-1023: Terminated
+srun: Force Terminated StepId=51638642.5
+Experiment: 475x475x475x475 1024 Ax ranks wbp
+Mean All Gather: 0.007917 | Mean Computation: 0.149538
+Experiment: 475x475x475x475 1024 ATx ranks wbp
+Mean Computation: 0.154429 | Mean Reduce Scatter: 0.041293
+Experiment: 475x475x475x475 1024 Ax ranks rrp
+Mean All Gather: 0.004765 | Mean Computation: 0.147589 | Mean Reduce Scatter: 0.037121
+Experiment: 475x475x475x475 1024 ATx ranks rrp
+Mean All Gather: 0.000060 | Mean Computation: 0.150548 | Mean Reduce Scatter: 0.046064
+Experiment: 475x475x475x475 1024 Ax ranks bcp
+Mean All Gather: 0.000901 | Mean Computation: 0.163508 | Mean Reduce Scatter: 0.002715
+Experiment: 475x475x475x475 1024 ATx ranks bcp
+Mean All Gather: 0.001401 | Mean Computation: 0.163925 | Mean Reduce Scatter: 0.019032
+Experiment: 200x200x1000x1000 1024 Ax ranks wbp
+Mean All Gather: 0.030921 | Mean Computation: 0.117107
+Experiment: 200x200x1000x1000 1024 ATx ranks wbp
+Mean Computation: 0.132569 | Mean Reduce Scatter: 0.129933
+Experiment: 200x200x1000x1000 1024 Ax ranks rrp
+Mean All Gather: 0.007035 | Mean Computation: 0.111777 | Mean Reduce Scatter: 0.045978
+Experiment: 200x200x1000x1000 1024 ATx ranks rrp
+Mean All Gather: 0.000121 | Mean Computation: 0.116386 | Mean Reduce Scatter: 0.024389
+Experiment: 200x200x1000x1000 1024 Ax ranks bcp
+Mean All Gather: 0.003455 | Mean Computation: 0.115812 | Mean Reduce Scatter: 0.001129
+Experiment: 200x200x1000x1000 1024 ATx ranks bcp
+Mean All Gather: 0.000102 | Mean Computation: 0.118990 | Mean Reduce Scatter: 0.052095
+Experiment: 1000x1000x200x200 1024 Ax ranks wbp
+Mean All Gather: 0.001806 | Mean Computation: 0.128514
+Experiment: 1000x1000x200x200 1024 ATx ranks wbp
+Mean Computation: 0.130665 | Mean Reduce Scatter: 0.005462
+Experiment: 1000x1000x200x200 1024 Ax ranks rrp
+Mean All Gather: 0.002137 | Mean Computation: 0.125568 | Mean Reduce Scatter: 0.000112
+Experiment: 1000x1000x200x200 1024 ATx ranks rrp
+Mean All Gather: 0.000022 | Mean Computation: 0.127354 | Mean Reduce Scatter: 0.014201
+Experiment: 1000x1000x200x200 1024 Ax ranks bcp
+Mean All Gather: 0.000242 | Mean Computation: 0.131142 | Mean Reduce Scatter: 0.001077
+Experiment: 1000x1000x200x200 1024 ATx ranks bcp
+Mean All Gather: 0.000306 | Mean Computation: 0.130229 | Mean Reduce Scatter: 0.006815
