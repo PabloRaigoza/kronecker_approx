@@ -149,26 +149,25 @@ RRPContext rrp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     int rem_u_send_size = ctx.u_recv_size % ctx.u_size;
     ctx.u_send_size = base_u_send_size + (ctx.u_rank < rem_u_send_size ? 1 : 0);
 
-    // ctx.A_local = (double*)malloc(ctx.A_local_size * sizeof(double));
-    // ctx.v_send_main = (double*)malloc(ctx.v_send_main_size * sizeof(double));
-    // ctx.v_recv = (double*)malloc((size_t)(ctx.v_recv_main_size + ctx.v_recv_edge_size) * sizeof(double));
-    // if (ctx.is_on_edge) {
-    //     ctx.v_send_edge = (double*)malloc(ctx.v_send_edge_size * sizeof(double));
-    // } else {
-    //     ctx.v_send_edge = nullptr;
-    // }
-    // ctx.u_send = (double*)malloc(ctx.u_send_size * sizeof(double));
-    // ctx.u_recv = (double*)malloc(ctx.u_recv_size * sizeof(double));
+    ctx.A_local = (double*)malloc(ctx.A_local_size * sizeof(double));
+    ctx.v_send_main = (double*)malloc(ctx.v_send_main_size * sizeof(double));
+    ctx.v_recv = (double*)malloc((size_t)(ctx.v_recv_main_size + ctx.v_recv_edge_size) * sizeof(double));
+    if (ctx.is_on_edge) {
+        ctx.v_send_edge = (double*)malloc(ctx.v_send_edge_size * sizeof(double));
+    } else {
+        ctx.v_send_edge = nullptr;
+    }
+    ctx.u_send = (double*)malloc(ctx.u_send_size * sizeof(double));
+    ctx.u_recv = (double*)malloc(ctx.u_recv_size * sizeof(double));
 
-    // for (size_t i = 0; i < ctx.A_local_size; i++)
-    //     ctx.A_local[i] = (double)world_rank;
-    // for (size_t i = 0; i < ctx.v_send_main_size; i++)
-    //     ctx.v_send_main[i] = (double)world_rank;
-    // for (size_t i = 0; i < ctx.v_send_edge_size; i++)
-    //     ctx.v_send_edge[i] = (double)world_rank;
-    // for (size_t i = 0; i < ctx.u_send_size; i++)
-    //     ctx.u_send[i] = (double)world_rank;
-
+    for (size_t i = 0; i < ctx.A_local_size; i++)
+        ctx.A_local[i] = (double)world_rank;
+    for (size_t i = 0; i < ctx.v_send_main_size; i++)
+        ctx.v_send_main[i] = (double)world_rank;
+    for (size_t i = 0; i < ctx.v_send_edge_size; i++)
+        ctx.v_send_edge[i] = (double)world_rank;
+    for (size_t i = 0; i < ctx.u_send_size; i++)
+        ctx.u_send[i] = (double)world_rank;
 
     // for (size_t i = 0; i < ctx.A_local_size; i++)
     //     ctx.A_local[i] = (double)rand() / RAND_MAX;

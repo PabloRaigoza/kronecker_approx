@@ -1,28 +1,18 @@
 #!/bin/bash
+#SBATCH --job-name=kron_node16
+#SBATCH --account=m4341
+#SBATCH --partition=cpu
+#SBATCH --constraint=cpu
+#SBATCH --qos=regular
 #SBATCH --nodes=16
 #SBATCH --ntasks=2048
 #SBATCH --cpus-per-task=1
-#SBATCH -N 16
-#SBATCH -C cpu
-#SBATCH -q regular
-#SBATCH -J sixteen_nodes
-#SBATCH -A m4341
-#SBATCH -t 0:15:0
-#SBATCH --output=node_16_%j.out
+#SBATCH --time=00:15:00
 
 run_experiment() {
-    local m1=$1
-    local n1=$2
-    local m2=$3
-    local n2=$4
-    local op=$5
-    local alg_str=$6
-
-    echo "Experiment: ${m1}x${n1}x${m2}x${n2} 2048 ${op} ranks ${alg_str}"
-    srun \
-      --cpu-bind=cores \
-      --hint=nomultithread \
-      ./main ${m1} ${n1} ${m2} ${n2} ${op} ${alg_str}
+    local m1=$1 n1=$2 m2=$3 n2=$4 op=$5 alg=$6
+    echo "Experiment: ${m1}x${n1}x${m2}x${n2} ${SLURM_NTASKS} ${op} ranks ${alg}"
+    srun --cpu-bind=cores --hint=nomultithread ./main ${m1} ${n1} ${m2} ${n2} ${op} ${alg}
 }
 
 run_experiment 100 100 100 100 Ax wbp
