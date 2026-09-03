@@ -1,0 +1,9 @@
+Experiment: 100x100x100x100 128 Ax ranks wbp
+Mean All Gather: 0.000498 | Mean Computation: 0.001400
+Experiment: 100x100x100x100 128 ATx ranks wbp
+Mean Computation: 0.001336 | Mean Reduce Scatter: 0.000357
+Experiment: 100x100x100x100 128 Ax ranks rrp
+RRP Distribution: m1=100, n1=100, m2=100, n2=100, world_size=128
+Each block is owned by ranks: 
+Block 0: 0 100 
+Block 1: 1 101 
