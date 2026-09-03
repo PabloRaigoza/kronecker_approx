@@ -61,10 +61,11 @@ def construct_A_tilde(_A, m1, n1, m2, n2):
             A_tilde[j*m1 + i] = vec(Aij(_A, i, j, m1, n1, m2, n2))
     return A_tilde
 
-def svd_decomp(_A, m1, n1, m2, n2, debug=False):
+def gkb_rank1_decomp(_A, m1, n1, m2, n2, debug=False):
     '''
     A: matrix of size (m1*m2, n1*n2)
-    return B, C where B is of size (m1, n1) and C is of size (m2, n2)
+    return B, C, stats where B is of size (m1, n1) and C is of size (m2, n2),
+    such that kron(B, C) approximates A (rank-1 Kronecker approximation via GKB).
     maxit looks like it should be n1*n2
     https://math.ecnu.edu.cn/~jypan/Teaching/books/2013%20Matrix%20Computations%204th.pdf
     p597
@@ -201,9 +202,41 @@ def svd_decomp(_A, m1, n1, m2, n2, debug=False):
     stats['condition_number_A_tilde_local'] = opts[0] / opts[-1]
     stats['condition_number_A_tilde_global'] = opts[0] / opts[1]
     # print(f"SVD approach stats: {stats}")
-    # return B, C
 
+    return B, C, stats
+
+def svd_decomp(_A, m1, n1, m2, n2, debug=False):
+    '''
+    Backwards-compatible wrapper around gkb_rank1_decomp that returns only stats.
+    '''
+    _, _, stats = gkb_rank1_decomp(_A, m1, n1, m2, n2, debug=debug)
     return stats
+
+def gkb_kron_sum_decomp(_A, m1, n1, m2, n2, num_terms, debug=False):
+    '''
+    Approximates A as a sum of rank-1 Kronecker terms:
+        A ~= sum_k kron(Bs[k], Cs[k])
+    by repeatedly running GKB-based rank-1 approximation (gkb_rank1_decomp) on the
+    current residual and deflating it out before finding the next term.
+
+    A: matrix of size (m1*m2, n1*n2)
+    num_terms: number of rank-1 Kronecker terms to extract
+    return Bs, Cs, stats_list where:
+        Bs: list of num_terms matrices of size (m1, n1)
+        Cs: list of num_terms matrices of size (m2, n2)
+        stats_list: list of the gkb_rank1_decomp stats dict for each term
+    '''
+    R = _A.copy()
+    Bs, Cs, stats_list = [], [], []
+    for k in range(num_terms):
+        B, C, stats = gkb_rank1_decomp(R, m1, n1, m2, n2, debug=debug)
+        Bs.append(B)
+        Cs.append(C)
+        stats_list.append(stats)
+        R = R - np.kron(B, C)
+        if debug:
+            print(f'Term {k+1}/{num_terms} | ||R||_F = {np.linalg.norm(R)}')
+    return Bs, Cs, stats_list
 
 def als_decomp(_A, m1, n1, m2, n2):
     '''

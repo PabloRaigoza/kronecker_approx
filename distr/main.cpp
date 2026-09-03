@@ -42,8 +42,8 @@ int main(int argc, char **argv) {
         wbp_free_context(&ctx);
     } else if (strcmp(alg_str, "rrp") == 0) {
         RRPContext ctx = rrp_distribute(world_rank, world_size, m1, n1, m2, n2);
-        // if (strcmp(op, "Ax") == 0) rrp_ax(&ctx, NUM_TRIALS, false);
-        // else if (strcmp(op, "ATx") == 0) rrp_atx(&ctx, NUM_TRIALS, false);
+        if (strcmp(op, "Ax") == 0) rrp_ax(&ctx, NUM_TRIALS, false);
+        else if (strcmp(op, "ATx") == 0) rrp_atx(&ctx, NUM_TRIALS, false);
         // rrp_verify(&ctx);
         rrp_free_context(&ctx);
     } else if (strcmp(alg_str, "bcp") == 0) {

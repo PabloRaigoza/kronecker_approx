@@ -184,17 +184,17 @@ RRPContext rrp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     if (ctx.is_on_edge)
         find_revcounts_displs(ctx.v_send_edge_size, ctx.v_edge_size, &ctx.recvcounts_v_edge, &ctx.displs_v_edge, ctx.v_comm_edge);
 
-    if (world_rank == 0) {
-        printf("RRP Distribution: m1=%d, n1=%d, m2=%d, n2=%d, world_size=%d\n", m1, n1, m2, n2, world_size);
-        printf("Each block is owned by ranks: \n");
-        for (size_t i = 0; i < ctx.state.size(); i++) {
-            printf("Block %zu: ", i);
-            for (size_t j = 0; j < ctx.state[i].size(); j++) {
-                printf("%d ", ctx.state[i][j]);
-            }
-            printf("\n");
-        }
-    }
+    // if (world_rank == 0) {
+    //     printf("RRP Distribution: m1=%d, n1=%d, m2=%d, n2=%d, world_size=%d\n", m1, n1, m2, n2, world_size);
+    //     printf("Each block is owned by ranks: \n");
+    //     for (size_t i = 0; i < ctx.state.size(); i++) {
+    //         printf("Block %zu: ", i);
+    //         for (size_t j = 0; j < ctx.state[i].size(); j++) {
+    //             printf("%d ", ctx.state[i][j]);
+    //         }
+    //         printf("\n");
+    //     }
+    // }
 
     return ctx;
 }
