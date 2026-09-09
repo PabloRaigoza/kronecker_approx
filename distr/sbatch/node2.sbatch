@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=kron_node2
 #SBATCH --account=m4341
-#SBATCH --partition=cpu
 #SBATCH --constraint=cpu
+#SBATCH --qos=regular
 #SBATCH --nodes=2
 #SBATCH --ntasks=256
 #SBATCH --cpus-per-task=1
