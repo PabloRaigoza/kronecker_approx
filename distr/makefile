@@ -1,3 +1,6 @@
+# make python environment variable
+PYTHON=../venv/bin/python
+
 c:
 	mpicxx -O3 -o main main.cpp -lopenblas
 
@@ -8,3 +11,7 @@ cr:
 
 cp:
 	CC -O3 -o main main.cpp
+
+plot_run:
+	$(PYTHON) parse_runs.py runs/run2 --csv > runs/run2/results.csv
+	$(PYTHON) plot.py runs/run2/results.csv

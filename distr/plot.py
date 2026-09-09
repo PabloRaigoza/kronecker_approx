@@ -133,8 +133,9 @@ def parse_size_filter(spec):
 
 # ── Strong scaling grid ──────────────────────────────────────────────────────
 
-def strong_scaling_plot(df, outdir, sizes=None, include_computation=True):
-    components = ["all_gather", "reduce_scatter"] + (["computation"] if include_computation else [])
+def strong_scaling_plot(df, outdir, sizes=None, components=("all_gather", "reduce_scatter", "computation"),
+                         out_name="strong_scaling", title=None):
+    components = [c for c in components if c in COMPONENT_COLORS]
 
     ops = [op for op in ("Ax", "ATx") if op in df["op"].unique()]
     if not ops:
@@ -217,6 +218,9 @@ def strong_scaling_plot(df, outdir, sizes=None, include_computation=True):
 
     fig.tight_layout()
 
+    if title:
+        fig.suptitle(title, fontsize=14, fontweight="bold", y=1.08)
+
     fig.legend(
         handles=component_legend, loc="lower left", bbox_to_anchor=(0.0, 1.01),
         ncol=len(component_legend), title="Component", title_fontsize=10,
@@ -226,7 +230,7 @@ def strong_scaling_plot(df, outdir, sizes=None, include_computation=True):
         ncol=len(alg_legend), title="Algorithm", title_fontsize=10,
     )
 
-    out_path = outdir / "strong_scaling.png"
+    out_path = outdir / f"{out_name}.png"
     fig.savefig(out_path, dpi=200, bbox_inches="tight", pad_inches=0.3)
     plt.close(fig)
     print(f"Saved {out_path}")
@@ -296,7 +300,6 @@ def main():
     ap.add_argument("--outdir", help="Directory to write plots to (default: <csv_dir>/plots)")
     ap.add_argument("--sizes", help="Comma-separated list of MxNxMxN sizes to include (default: all)")
     ap.add_argument("--include-failed", action="store_true", help="Include rows marked failed")
-    ap.add_argument("--no-computation", action="store_true", help="Exclude computation time from the stacked bars")
     args = ap.parse_args()
 
     csv_path = Path(args.csv)
@@ -316,7 +319,24 @@ def main():
 
     sizes = parse_size_filter(args.sizes) if args.sizes else None
 
-    strong_scaling_plot(df, outdir, sizes=sizes, include_computation=not args.no_computation)
+    strong_scaling_plot(
+        df, outdir, sizes=sizes,
+        components=["computation"],
+        out_name="strong_scaling_compute_only",
+        title="Compute Only",
+    )
+    strong_scaling_plot(
+        df, outdir, sizes=sizes,
+        components=["all_gather", "reduce_scatter"],
+        out_name="strong_scaling_communication_only",
+        title="Communication Only",
+    )
+    strong_scaling_plot(
+        df, outdir, sizes=sizes,
+        components=["all_gather", "reduce_scatter", "computation"],
+        out_name="strong_scaling_compute_and_communication",
+        title="Compute + Communication",
+    )
 
     if per_rank is not None and not per_rank.empty:
         per_rank_plot(per_rank, outdir)
