@@ -6,7 +6,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=128
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
+#SBATCH --time=01:00:00
 
 run_experiment() {
     local m1=$1 n1=$2 m2=$3 n2=$4 op=$5 alg=$6
