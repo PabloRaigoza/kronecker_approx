@@ -13,5 +13,5 @@ cp:
 	CC -O3 -o main main.cpp
 
 plot_run:
-	$(PYTHON) parse_runs.py runs/run2 --csv > runs/run2/results.csv
-	$(PYTHON) plot.py runs/run2/results.csv
+	$(PYTHON) parse_runs.py runs/run3 --csv > runs/run3/results.csv
+	$(PYTHON) plot.py runs/run3/results.csv

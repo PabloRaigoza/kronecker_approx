@@ -105,9 +105,30 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
 
     ctx.state.resize(ctx.n1, std::vector<int>(1, 0));
     int num_ranks = 1;
+    // num_col_groups tracks distinct groups along n1, intra_factor along n2.
+    // Bisecting either dimension requires a group to own >= 2 units of it;
+    // once a dimension is exhausted (num_col_groups > n1/2, or
+    // intra_factor > n2/2), every group is down to a single unit and
+    // bcp_split_columns / bcp_split_each_rank can no longer produce a valid
+    // "+num_ranks" sibling for it -- that id would simply be dropped from
+    // ctx.state, leaving a hole that later fails the lookup assertion below.
+    // So once a dimension saturates, keep growing via the other one.
+    int num_col_groups = 1;
+    int intra_factor = 1;
     for (int i = 0; num_ranks < ctx.world_size; i++) {
-        if (i % 3 == 1) bcp_split_each_rank(&ctx, ctx.state, num_ranks);
-        else bcp_split_columns(&ctx, ctx.state, num_ranks);
+        bool can_split_columns = num_col_groups * 2 <= ctx.n1;
+        bool can_split_intra = intra_factor * 2 <= ctx.n2;
+        assert((can_split_columns || can_split_intra) &&
+               "world_size exceeds n1*n2: BCP cannot distribute this many ranks");
+
+        bool do_each_rank = can_split_intra && (!can_split_columns || (i % 3 == 1));
+        if (do_each_rank) {
+            bcp_split_each_rank(&ctx, ctx.state, num_ranks);
+            intra_factor *= 2;
+        } else {
+            bcp_split_columns(&ctx, ctx.state, num_ranks);
+            num_col_groups *= 2;
+        }
     }
 
     int intra_block_index = -1, inter_block_index = -1;
