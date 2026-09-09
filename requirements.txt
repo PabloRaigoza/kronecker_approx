@@ -1,3 +1,5 @@
 tqdm
 numpy
 scipy
+matplotlib
+pandas

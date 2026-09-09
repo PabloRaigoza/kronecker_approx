@@ -1,456 +1,328 @@
-import re
-import pandas as pd
+#!/usr/bin/env python3
+"""
+Plot scaling results produced by parse_runs.py.
+
+Usage:
+    python3 plot.py results.csv
+    python3 plot.py results.csv --outdir some/other/dir
+    python3 plot.py results.csv --sizes 100x100x100x100,475x475x475x475
+    python3 plot.py results.csv --no-computation
+
+Input is the CSV emitted by `parse_runs.py <run_dir> --csv [--debug]`:
+    file,m1,n1,m2,n2,ranks,op,alg,all_gather,computation,reduce_scatter,total,failed
+optionally followed by a "# per_rank" section with per-rank timings.
+
+Plots are written to <csv_dir>/plots/ unless --outdir is given.
+"""
+
+import argparse
+import sys
 from pathlib import Path
 
-def time_format(x, pos):
-    if x >= 1:
-        return f"{x:.0f}s"
-    elif x >= 0.001:
-        return f"{x*1e3:.0f}ms"
-    else:
-        return f"{x*1e6:.0f}µs"
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MaxNLocator
+from matplotlib.patches import Patch
 
-alg_map = {
-    "wbp": "ax_alg1",
-    "rrp": "ax_alg2",
-    "bcp": "ax_alg3",
+# ── Style ────────────────────────────────────────────────────────────────────
+
+plt.rcParams.update({
+    "figure.facecolor": "white",
+    "axes.facecolor": "white",
+    "axes.edgecolor": "#4a4a4a",
+    "axes.linewidth": 0.8,
+    "axes.grid": True,
+    "axes.axisbelow": True,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "grid.color": "#d9d9d9",
+    "grid.linewidth": 0.6,
+    "grid.linestyle": "-",
+    "font.size": 11,
+    "font.family": "sans-serif",
+    "axes.titlesize": 13,
+    "axes.titleweight": "bold",
+    "axes.labelsize": 11,
+    "xtick.labelsize": 10,
+    "ytick.labelsize": 10,
+    "legend.fontsize": 10,
+    "legend.frameon": False,
+    "text.color": "#222222",
+    "axes.labelcolor": "#222222",
+    "xtick.color": "#444444",
+    "ytick.color": "#444444",
+})
+
+COMPONENT_COLORS = {
+    "all_gather": "#4C72B0",
+    "reduce_scatter": "#DD8452",
+    "computation": "#55A868",
 }
+COMPONENT_LABELS = {
+    "all_gather": "All Gather",
+    "reduce_scatter": "Reduce Scatter",
+    "computation": "Computation",
+}
+HATCHES = [None, "//", "\\\\", "xx", "..", "++"]
 
-def parse_experiment_log(path) -> pd.DataFrame:
+ALG_LABELS = {"wbp": "WBP", "rrp": "RRP", "bcp": "BCP"}
+
+
+def alg_label(alg):
+    return ALG_LABELS.get(alg, alg.upper())
+
+
+def time_formatter(x, _pos=None):
+    if x <= 0:
+        return "0"
+    if x >= 1:
+        val, unit = x, "s"
+    elif x >= 1e-3:
+        val, unit = x * 1e3, "ms"
+    else:
+        val, unit = x * 1e6, "µs"
+    s = f"{val:.1f}".rstrip("0").rstrip(".")
+    return f"{s}{unit}"
+
+
+# ── Loading ──────────────────────────────────────────────────────────────────
+
+def load_csv(path):
+    """Load the mean-timings section and, if present, the per-rank section."""
     path = Path(path)
-    text = path.read_text()
-    lines = text.splitlines()
+    lines = path.read_text().splitlines()
 
-    header_pattern = re.compile(
-        r"Experiment:\s+"
-        r"(\d+)x(\d+)x(\d+)x(\d+)\s+"  # m1 n1 m2 n2
-        r"(\d+)\s+"                   # ranks
-        r"(\S+)\s+"                   # op
-        r"ranks\s+"
-        r"(\S+)"                      # algorithm
-    )
+    try:
+        split_idx = next(i for i, l in enumerate(lines) if l.strip() == "# per_rank")
+    except StopIteration:
+        split_idx = None
 
-    # Mean patterns (all optional per line)
-    all_gather_pattern = re.compile(r"Mean All Gather:\s*([\d.]+)")
-    computation_pattern = re.compile(r"Mean Computation:\s*([\d.]+)")
-    reduce_scatter_pattern = re.compile(r"Mean Reduce Scatter:\s*([\d.]+)")
+    from io import StringIO
 
-    rows = []
-    current_meta = None
+    mean_text = "\n".join(lines[:split_idx] if split_idx is not None else lines)
+    df = pd.read_csv(StringIO(mean_text))
+    for col in ("all_gather", "computation", "reduce_scatter", "total"):
+        df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    for line in lines:
-        # Check for experiment header
-        header_match = header_pattern.search(line)
-        if header_match:
-            m1, n1, m2, n2, ranks, op, algorithm = header_match.groups()
-            
-            current_meta = {
-                "Algorithm": alg_map.get(algorithm, algorithm),
-                "Op": op,
-                "Ranks": int(ranks),
-                "m1": int(m1),
-                "n1": int(n1),
-                "m2": int(m2),
-                "n2": int(n2),
-            }
+    per_rank = None
+    if split_idx is not None:
+        rank_text = "\n".join(lines[split_idx + 1:])
+        rank_text = "\n".join(l for l in rank_text.splitlines() if l.strip())
+        if rank_text.strip():
+            per_rank = pd.read_csv(StringIO(rank_text))
+            for col in ("all_gather", "computation", "reduce_scatter"):
+                per_rank[col] = pd.to_numeric(per_rank[col], errors="coerce")
+
+    return df, per_rank
+
+
+def parse_size_filter(spec):
+    """Parse '100x100x100x100,200x200x1000x1000' into a set of (m1,n1,m2,n2) tuples."""
+    sizes = set()
+    for chunk in spec.split(","):
+        chunk = chunk.strip()
+        if not chunk:
             continue
-
-        if current_meta is None:
-            continue
-
-        # Parse mean line(s)
-        all_gather_match = all_gather_pattern.search(line)
-        computation_match = computation_pattern.search(line)
-        reduce_scatter_match = reduce_scatter_pattern.search(line)
-
-        # Only create a row if at least one metric is found
-        if any([all_gather_match, computation_match, reduce_scatter_match]):
-            row = {
-                **current_meta,
-                "All_Gather_Time": float(all_gather_match.group(1)) if all_gather_match else 0.0,
-                "Computation_Time": float(computation_match.group(1)) if computation_match else 0.0,
-                "Reduce_Scatter_Time": float(reduce_scatter_match.group(1)) if reduce_scatter_match else 0.0,
-            }
-            rows.append(row)
-
-            # Reset so we don’t accidentally reuse metadata if format breaks
-            current_meta = None
-
-    return rows
-
-# data = parse_experiment_log("node_1_48803154.out")
-# data.extend(parse_experiment_log("node_2_48803229.out"))
-# data.extend(parse_experiment_log("node_4_48803691.out"))
-# data.extend(parse_experiment_log("node_8_48803692.out"))
-# data = parse_experiment_log("runs/run2/node_1_48806370.out")
-# data.extend(parse_experiment_log("runs/run2/node_2_48806372.out"))
-# data.extend(parse_experiment_log("runs/run2/node_4_48806374.out"))
-# data.extend(parse_experiment_log("runs/run2/node_8_48806377.out"))
-# data.extend(parse_experiment_log("runs/run2/node_16_48808959.out"))
-# data.extend(parse_experiment_log("runs/run2/node_32_48809096.out"))
-
-# data = parse_experiment_log("node_1_51627998.out")
-# data.extend(parse_experiment_log("node_2_51628001.out"))
-# data.extend(parse_experiment_log("node_4_51628672.out"))
-
-data = parse_experiment_log("node_1_51628876.out")
-data.extend(parse_experiment_log("node_2_51628878.out"))
-data.extend(parse_experiment_log("node_4_51628879.out"))
-data.extend(parse_experiment_log("node_8_51638642.out"))
-data.extend(parse_experiment_log("node_16_51629130.out"))
+        parts = tuple(int(x) for x in chunk.lower().split("x"))
+        if len(parts) != 4:
+            sys.exit(f"Error: invalid size '{chunk}', expected form MxNxMxN")
+        sizes.add(parts)
+    return sizes
 
 
-data = pd.DataFrame(data)
-# print(data[:129])
+# ── Strong scaling grid ──────────────────────────────────────────────────────
 
-agg = (
-    data
-    .groupby(
-        ["Algorithm", "Op", "m1", "n1", "m2", "n2", "Ranks"],
-        as_index=False
-    )
-    .agg(
-        AllGather_mean=("All_Gather_Time", "mean"),
-        Compute_mean=("Computation_Time", "mean"),
-        ReduceScatter_mean=("Reduce_Scatter_Time", "mean"),
-    )
-)
+def strong_scaling_plot(df, outdir, sizes=None, include_computation=True):
+    components = ["all_gather", "reduce_scatter"] + (["computation"] if include_computation else [])
 
+    ops = [op for op in ("Ax", "ATx") if op in df["op"].unique()]
+    if not ops:
+        ops = sorted(df["op"].unique())
 
-def strong_scaling_bar_plot(df, sizes):
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Patch
+    all_sizes = sorted(df[["m1", "n1", "m2", "n2"]].drop_duplicates().itertuples(index=False, name=None))
+    if sizes:
+        all_sizes = [s for s in all_sizes if s in sizes]
+    if not all_sizes:
+        print("No matching problem sizes found; skipping strong scaling plot.")
+        return
 
-    operations = ["Ax", "ATx"]
-    ncols = len(sizes)
+    algs = sorted(df["alg"].unique())
+    hatch_for = {a: HATCHES[i % len(HATCHES)] for i, a in enumerate(algs)}
 
-    colors = {
-        "All_Gather_Time": "#ffbb78",
-        "Reduce_Scatter_Time": "#ff7f0e",
-        "Computation_Time": "#2ca02c"
-    }
-
+    nrows, ncols = len(ops), len(all_sizes)
     fig, axes = plt.subplots(
-        2, ncols,
-        figsize=(5*ncols, 10),
-        sharey=False,
-        sharex=False
+        nrows, ncols,
+        figsize=(max(4.6 * ncols, 7.5), 4.2 * nrows),
+        squeeze=False,
     )
 
-    # If only one column, axes shape is (2,), fix indexing
-    if ncols == 1:
-        axes = np.array(axes).reshape(2,1)
+    for col, size in enumerate(all_sizes):
+        m1, n1, m2, n2 = size
+        df_size = df[(df["m1"] == m1) & (df["n1"] == n1) & (df["m2"] == m2) & (df["n2"] == n2)]
 
-    for col, PROBLEM_SIZE in enumerate(sizes):
+        for row, op in enumerate(ops):
+            ax = axes[row][col]
+            df_op = df_size[df_size["op"] == op]
 
-        m1, n1, m2, n2 = PROBLEM_SIZE
-
-        df_size = df[
-            (df["m1"] == m1) &
-            (df["n1"] == n1) &
-            (df["m2"] == m2) &
-            (df["n2"] == n2)
-        ]
-
-        for row, OPERATION in enumerate(operations):
-
-            ax = axes[row, col]
-
-            df_op = df_size[df_size["Op"] == OPERATION]
             if df_op.empty:
+                ax.axis("off")
                 continue
 
             agg = (
-                df_op
-                .groupby(["Algorithm", "Ranks"], as_index=False)
-                .agg(
-                    All_Gather_Time=("All_Gather_Time", "mean"),
-                    Reduce_Scatter_Time=("Reduce_Scatter_Time", "mean"),
-                    Computation_Time=("Computation_Time", "mean"),
-                )
+                df_op.groupby(["alg", "ranks"], as_index=False)[["all_gather", "reduce_scatter", "computation"]]
+                .mean()
             )
 
-            algorithms = sorted(agg["Algorithm"].unique())
-            all_ranks = sorted(agg["Ranks"].unique())
-
+            all_ranks = sorted(agg["ranks"].unique())
             x = np.arange(len(all_ranks))
-            width = 0.25
+            width = 0.8 / max(len(algs), 1)
+            offsets = {alg: (i - (len(algs) - 1) / 2) * width for i, alg in enumerate(algs)}
 
-            offsets = {
-                algo: (i - (len(algorithms) - 1) / 2) * width
-                for i, algo in enumerate(algorithms)
-            }
+            for alg in algs:
+                sub = agg[agg["alg"] == alg].set_index("ranks").reindex(all_ranks).fillna(0.0)
+                bottom = np.zeros(len(all_ranks))
+                for comp in components:
+                    ax.bar(
+                        x + offsets[alg], sub[comp], width,
+                        bottom=bottom,
+                        color=COMPONENT_COLORS[comp],
+                        hatch=hatch_for[alg],
+                        edgecolor="white",
+                        linewidth=0.6,
+                    )
+                    bottom += sub[comp].to_numpy()
 
-            for algo in algorithms:
-                subset = agg[agg["Algorithm"] == algo]
-                subset = subset.set_index("Ranks").reindex(all_ranks, fill_value=0.0)
+            ax.set_xticks(x)
+            ax.set_xticklabels([str(r) for r in all_ranks])
+            ax.yaxis.set_major_formatter(FuncFormatter(time_formatter))
+            ax.grid(True, axis="y")
+            ax.grid(False, axis="x")
 
-                all_gather = subset["All_Gather_Time"]
-                reduce_scatter = subset["Reduce_Scatter_Time"]
-                computation = subset["Computation_Time"]
-
-                bottom_rs = all_gather
-                bottom_comp = all_gather + reduce_scatter
-
-                hatch_map = {
-                    "ax_alg1": "//",
-                    "ax_alg2": "\\\\",
-                    "ax_alg3": None,
-                }
-                hatch = hatch_map.get(algo, None)
-
-                ax.bar(x + offsets[algo], all_gather, width,
-                       color=colors["All_Gather_Time"], hatch=hatch)
-
-                ax.bar(x + offsets[algo], reduce_scatter, width,
-                       bottom=bottom_rs,
-                       color=colors["Reduce_Scatter_Time"], hatch=hatch)
-
-                # ax.bar(x + offsets[algo], computation, width,
-                #        bottom=bottom_comp,
-                #        color=colors["Computation_Time"], hatch=hatch)
-
-            # ax.set_yscale("log")
-            ax.grid(True, which="both", linestyle="--", linewidth=0.5)
-
-            # Column titles (problem size only on top row)
             if row == 0:
-                ax.set_title(
-                    f"{m1}x{n1}x{m2}x{n2}",
-                    fontsize=16
-                )
-                ax.set_xticks(x)
-                ax.set_xticklabels([r // 1 for r in all_ranks], fontsize=12)
-                ax.set_xlabel("Cores")               
-                
-
-            # Row labels on first column only
+                ax.set_title(f"{m1}×{n1}×{m2}×{n2}")
+            if row == nrows - 1:
+                ax.set_xlabel("Ranks")
             if col == 0:
-                ax.set_ylabel(f"{OPERATION}\nTime", fontsize=16)
+                ax.set_ylabel(f"{op}\nTime")
 
-            # X ticks (bottom row only)
-            if row == 1:
-                ax.set_xticks(x)
-                ax.set_xticklabels([r // 1 for r in all_ranks], fontsize=12)
-                ax.set_xlabel("Cores")
-
-    # Fix y-axis formatting
-    for ax in axes.flatten():
-        ax.yaxis.set_major_formatter(plt.FuncFormatter(time_format))
-
-    # -----------------------
-    # Global Legends
-    # -----------------------
-    stack_legend = [
-        Patch(facecolor=colors["All_Gather_Time"], label="All Gather"),
-        Patch(facecolor=colors["Reduce_Scatter_Time"], label="Reduce Scatter"),
-        # Patch(facecolor=colors["Computation_Time"], label="Computation"),
+    component_legend = [
+        Patch(facecolor=COMPONENT_COLORS[c], label=COMPONENT_LABELS[c], edgecolor="white")
+        for c in components
+    ]
+    alg_legend = [
+        Patch(facecolor="#eeeeee", edgecolor="#444444", hatch=hatch_for[a], label=alg_label(a))
+        for a in algs
     ]
 
-    # algo_legend = [
-    #     Patch(facecolor="white", edgecolor="black", hatch="//", label=""),
-    #     Patch(facecolor="white", edgecolor="black", hatch="\\\\", label="BCP"),
-    #     Patch(facecolor="white", edgecolor="black", label="RRP"),
-    # ]
-    # find the key in alg_map that corresponds to "ax_alg1" and make the label "WBP"
-    algo_legend = [
-        Patch(facecolor="white", edgecolor="black", hatch="//", label="ax_alg1"),
-        Patch(facecolor="white", edgecolor="black", hatch="\\\\", label="ax_alg2"),
-        Patch(facecolor="white", edgecolor="black", label="ax_alg3"),
-    ]
+    fig.tight_layout()
 
     fig.legend(
-        handles=stack_legend,
-        loc="upper left",
-        ncol=3,
-        title="Components",
-        fontsize=12
+        handles=component_legend, loc="lower left", bbox_to_anchor=(0.0, 1.01),
+        ncol=len(component_legend), title="Component", title_fontsize=10,
     )
-
     fig.legend(
-        handles=algo_legend,
-        loc="upper right",
-        title="Algorithm",
-        fontsize=12
+        handles=alg_legend, loc="lower right", bbox_to_anchor=(1.0, 1.01),
+        ncol=len(alg_legend), title="Algorithm", title_fontsize=10,
     )
 
-    fig.suptitle("", fontsize=22)
+    out_path = outdir / "strong_scaling.png"
+    fig.savefig(out_path, dpi=200, bbox_inches="tight", pad_inches=0.3)
+    plt.close(fig)
+    print(f"Saved {out_path}")
 
-    plt.tight_layout(rect=[0, 0, 1, 0.9])
-    plt.savefig("strong_scaling_grid.png", dpi=300)
-    plt.close()
 
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.patches import Patch
+# ── Per-rank breakdown ───────────────────────────────────────────────────────
 
-def rank_time_bar_plot(df, PROBLEM_SIZE, OPERATION, ALGORITHM, TOTAL_RANKS):
-    m1, n1, m2, n2 = PROBLEM_SIZE
+def per_rank_plot(per_rank, outdir):
+    per_rank_dir = outdir / "per_rank"
+    per_rank_dir.mkdir(parents=True, exist_ok=True)
 
-    # Filter fixed problem size, operation, algorithm, and total ranks
-    df = df[
-        (df["m1"] == m1) & (df["n1"] == n1) &
-        (df["m2"] == m2) & (df["n2"] == n2) &
-        (df["Op"] == OPERATION) &
-        (df["Algorithm"] == ALGORITHM) &
-        (df["Ranks"] == TOTAL_RANKS)
-    ]
+    combos = per_rank[["m1", "n1", "m2", "n2", "op", "ranks"]].drop_duplicates()
+    combos = combos.sort_values(["ranks", "op", "m1", "n1", "m2", "n2"])
 
-    if df.empty:
-        print("No data for this configuration")
-        return
-
-    # Ensure each rank is unique
-    df = df.groupby("Rank", as_index=True).agg(
-        All_Gather_Time=("All_Gather_Time", "mean"),
-        Reduce_Scatter_Time=("Reduce_Scatter_Time", "mean"),
-        Computation_Time=("Computation_Time", "mean"),
-    )
-
-    all_ranks = sorted(df.index)
-    all_gather = df["All_Gather_Time"]
-    reduce_scatter = df["Reduce_Scatter_Time"]
-    computation = df["Computation_Time"]
-
-    bottom_rs = all_gather
-    bottom_comp = all_gather + reduce_scatter
-
-    colors = {
-        "All_Gather_Time": "#ffbb78",
-        "Reduce_Scatter_Time": "#ff7f0e",
-        "Computation_Time": "#2ca02c"
-    }
-
-    fig, ax = plt.subplots(figsize=(16, 6))
-    ax.bar(all_ranks, all_gather, color=colors["All_Gather_Time"], label="All Gather")
-    ax.bar(all_ranks, reduce_scatter, bottom=bottom_rs, color=colors["Reduce_Scatter_Time"], label="Reduce Scatter")
-    ax.bar(all_ranks, computation, bottom=bottom_comp, color=colors["Computation_Time"], label="Computation")
-
-    ax.set_yscale("log")
-    ax.set_xlabel("Rank ID")
-    ax.set_ylabel("Time (s)")
-    ax.set_title(f"{ALGORITHM} — {OPERATION} ({m1}x{n1}x{m2}x{n2}), {TOTAL_RANKS} ranks")
-
-    ax.legend()
-    ax.grid(True, which="both", linestyle="--", linewidth=0.5)
-
-    plt.tight_layout()
-    plt.savefig(f"rank_time_{ALGORITHM}_{OPERATION}_{TOTAL_RANKS}ranks.png", dpi=300)
-    plt.close()
-
-def rank_time_bar_plot_total(df, PROBLEM_SIZES, OPERATIONS, ALGORITHMS, TOTAL_RANKS):
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Patch
-
-    colors = {
-        "All_Gather_Time": "#ffbb78",
-        "Reduce_Scatter_Time": "#ff7f0e",
-        "Computation_Time": "#2ca02c"
-    }
-
-    # Prepare all combinations
-    combinations = []
-    for ps in PROBLEM_SIZES:
-        for alg in ALGORITHMS:
-            for op in OPERATIONS:
-                combinations.append((ps, op, alg))
-
-    n_subplots = len(combinations)
-    n_cols = 4
-    n_rows = (n_subplots + n_cols - 1) // n_cols  # ceil division
-
-    fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * 5, n_rows * 4), sharey=False)
-    axes = axes.flatten()
-
-    # for ax in axes:
-    #     ax.set_ylim(1e-4, 10 * 1.2)  # adjust lower bound as appropriate
-
-    for idx, (ps, op, alg) in enumerate(combinations):
-        ax = axes[idx]
-
-        m1, n1, m2, n2 = ps
-        df_sub = df[
-            (df["m1"] == m1) & (df["n1"] == n1) &
-            (df["m2"] == m2) & (df["n2"] == n2) &
-            (df["Op"] == op) &
-            (df["Algorithm"] == alg) &
-            (df["Ranks"] == TOTAL_RANKS)
+    for _, combo in combos.iterrows():
+        m1, n1, m2, n2, op, ranks = combo["m1"], combo["n1"], combo["m2"], combo["n2"], combo["op"], combo["ranks"]
+        df_c = per_rank[
+            (per_rank["m1"] == m1) & (per_rank["n1"] == n1) &
+            (per_rank["m2"] == m2) & (per_rank["n2"] == n2) &
+            (per_rank["op"] == op) & (per_rank["ranks"] == ranks)
         ]
-
-        if df_sub.empty:
-            ax.set_title(f"{op} | {alg} | {m1}x{n1}x{m2}x{n2}\nNo data")
-            ax.axis("off")
+        algs = sorted(df_c["alg"].unique())
+        if not algs:
             continue
 
-        # Keep rank order as in the log
-        ranks = df_sub["Rank"].values
-        all_gather = df_sub["All_Gather_Time"].values
-        reduce_scatter = df_sub["Reduce_Scatter_Time"].values
-        computation = df_sub["Computation_Time"].values
+        fig, axes = plt.subplots(len(algs), 1, figsize=(11, 3.2 * len(algs)), squeeze=False)
 
-        eps = 1e-12
-        all_gather = np.maximum(all_gather, eps)
-        reduce_scatter = np.maximum(reduce_scatter, eps)
-        computation = np.maximum(computation, eps)
+        for i, alg in enumerate(algs):
+            ax = axes[i][0]
+            df_a = df_c[df_c["alg"] == alg].groupby("rank", as_index=True)[
+                ["all_gather", "reduce_scatter", "computation"]
+            ].mean().sort_index()
 
+            ranks_idx = df_a.index.to_numpy()
+            bottom = np.zeros(len(ranks_idx))
+            for comp in ("all_gather", "reduce_scatter", "computation"):
+                vals = df_a[comp].fillna(0.0).to_numpy()
+                ax.bar(ranks_idx, vals, bottom=bottom, color=COMPONENT_COLORS[comp],
+                       edgecolor="white", linewidth=0.3, width=0.9)
+                bottom += vals
 
-        bottom_rs = all_gather
-        bottom_comp = all_gather + reduce_scatter
+            ax.set_title(f"{alg_label(alg)}", loc="left", fontsize=11)
+            ax.yaxis.set_major_formatter(FuncFormatter(time_formatter))
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+            ax.set_xlabel("Rank ID")
+            ax.set_ylabel("Time")
 
-        hatch = "//" if alg == "ax_alg1" else None
+        component_legend = [
+            Patch(facecolor=COMPONENT_COLORS[c], label=COMPONENT_LABELS[c], edgecolor="white")
+            for c in ("all_gather", "reduce_scatter", "computation")
+        ]
+        fig.tight_layout(rect=[0, 0, 1, 0.92])
+        fig.suptitle(f"{op}  •  {m1}×{n1}×{m2}×{n2}  •  {ranks} ranks", fontsize=13, fontweight="bold", y=0.98)
+        fig.legend(handles=component_legend, loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.02))
 
-        ax.bar(ranks, all_gather, color=colors["All_Gather_Time"], hatch=hatch, label="All Gather")
-        ax.bar(ranks, reduce_scatter, bottom=bottom_rs, color=colors["Reduce_Scatter_Time"], hatch=hatch, label="Reduce Scatter")
-        ax.bar(ranks, computation, bottom=bottom_comp, color=colors["Computation_Time"], hatch=hatch, label="Computation")
-
-        ax.set_title(f"{op} | {alg} | {m1}x{n1}x{m2}x{n2}", fontsize=10)
-        # ax.set_yscale("log")
-        ax.grid(True, which="both", axis="y", linestyle="--", linewidth=0.3)
-        ax.set_xlabel("Rank ID", fontsize=8)
-
-    # Hide unused subplots
-    for ax in axes[n_subplots:]:
-        ax.axis("off")
-
-    for ax in axes:
-        ax.relim()
-        ax.autoscale_view()
-
-
-    # Fix y-axis formatting
-    for ax in axes[:n_subplots]:
-        ax.set_ylabel("Time (s)", fontsize=8)
-        ax.yaxis.set_major_formatter(plt.FuncFormatter(time_format))
-
-    # Global legend
-    stack_legend = [
-        Patch(facecolor=colors["All_Gather_Time"], label="All Gather"),
-        Patch(facecolor=colors["Reduce_Scatter_Time"], label="Reduce Scatter"),
-        Patch(facecolor=colors["Computation_Time"], label="Computation"),
-    ]
-    algo_legend = [
-        Patch(facecolor="white", edgecolor="black", hatch="//", label="Alg 1"),
-        Patch(facecolor="white", edgecolor="black", label="Alg 2"),
-    ]
-
-    fig.legend(handles=stack_legend + algo_legend, loc="lower center", ncol=5, fontsize=10, title="Legend")
-
-    plt.tight_layout(rect=[0, 0.05, 1, 0.95])
-    plt.suptitle(f"Rank-wise Total Time (Stacked) Across Experiments {TOTAL_RANKS}", fontsize=16)
-    plt.savefig(f"rank_time_bar_plot_all_raw_order_{TOTAL_RANKS}.png", dpi=300)
-    plt.close()
+        out_path = per_rank_dir / f"per_rank_{op}_{m1}x{n1}x{m2}x{n2}_{ranks}ranks.png"
+        fig.savefig(out_path, dpi=200, bbox_inches="tight", pad_inches=0.3)
+        plt.close(fig)
+        print(f"Saved {out_path}")
 
 
-# strong_scaling_plot(agg, 200, 200, 1000, 1000)
-# rank_time_bar_plot(data, PROBLEM_SIZE=(1000, 1000, 200, 200), OPERATION="Ax", ALGORITHM="ax_alg1", TOTAL_RANKS=128)
+# ── Entry point ──────────────────────────────────────────────────────────────
 
-strong_scaling_bar_plot(data, [(100, 100, 100, 100), (200, 200, 1000, 1000), (1000, 1000, 200, 200), (475, 475, 475, 475)])
-# rank_time_bar_plot_total(
-#     data,
-#     PROBLEM_SIZES=[(100, 100, 100, 100), (200, 200, 1000, 1000), (1000, 1000, 200, 200), (475, 475, 475, 475)],
-#     OPERATIONS=["Ax", "ATx"],
-#     ALGORITHMS=["ax_alg1", "ax_alg2"],
-#     TOTAL_RANKS=512
-# )
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("csv", help="CSV file produced by parse_runs.py --csv")
+    ap.add_argument("--outdir", help="Directory to write plots to (default: <csv_dir>/plots)")
+    ap.add_argument("--sizes", help="Comma-separated list of MxNxMxN sizes to include (default: all)")
+    ap.add_argument("--include-failed", action="store_true", help="Include rows marked failed")
+    ap.add_argument("--no-computation", action="store_true", help="Exclude computation time from the stacked bars")
+    args = ap.parse_args()
+
+    csv_path = Path(args.csv)
+    if not csv_path.is_file():
+        sys.exit(f"Error: {csv_path} is not a file")
+
+    outdir = Path(args.outdir) if args.outdir else csv_path.resolve().parent / "plots"
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    df, per_rank = load_csv(csv_path)
+
+    if "failed" in df.columns and not args.include_failed:
+        df = df[df["failed"] == 0]
+
+    if df.empty:
+        sys.exit("No usable rows in CSV (all failed or empty).")
+
+    sizes = parse_size_filter(args.sizes) if args.sizes else None
+
+    strong_scaling_plot(df, outdir, sizes=sizes, include_computation=not args.no_computation)
+
+    if per_rank is not None and not per_rank.empty:
+        per_rank_plot(per_rank, outdir)
+    else:
+        print("No per-rank data in CSV; skipping per-rank plots.")
+
+
+if __name__ == "__main__":
+    main()
