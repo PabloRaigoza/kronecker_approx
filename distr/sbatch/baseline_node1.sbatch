@@ -9,10 +9,9 @@
 #SBATCH --time=01:00:00
 
 # Point SLATE_LIB_DIR at wherever SLATE (+ blaspp/lapackpp) is installed on
-# this cluster (e.g. a "module load slate", or your own site build like
-# ~/builds/slate-install). If that SLATE was also built with CUDA support
-# (gpu_backend=auto/cuda), also add the CUDA runtime lib dir here.
-export LD_LIBRARY_PATH="${SLATE_LIB_DIR:-$HOME/builds/slate-install/lib}:${LD_LIBRARY_PATH:-}"
+# this cluster -- defaults to where compile_perlmutter.sh installs it
+# ($PSCRATCH/builds/slate-install), since $HOME quota is too small for it.
+export LD_LIBRARY_PATH="${SLATE_LIB_DIR:-$PSCRATCH/builds/slate-install/lib}:${LD_LIBRARY_PATH:-}"
 
 run_experiment() {
     local m1=$1 n1=$2 m2=$3 n2=$4

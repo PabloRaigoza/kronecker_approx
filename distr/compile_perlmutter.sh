@@ -12,9 +12,14 @@
 #
 # Env vars (all optional):
 #   SLATE_SRC_DIR   where to download/extract SLATE source
-#                     (default: $HOME/builds/slate-2025.05.28)
+#                     (default: $PSCRATCH/builds/slate-2025.05.28)
 #   SLATE_PREFIX    where to install SLATE
-#                     (default: $HOME/builds/slate-install)
+#                     (default: $PSCRATCH/builds/slate-install)
+#
+# Installs under $PSCRATCH rather than $HOME: the SLATE source + build tree
+# is a few GB, which does not fit in NERSC's much smaller home quota.
+# Note $PSCRATCH is purged (NERSC deletes files unused for ~8 weeks) -- fine
+# for a rebuildable install, but don't treat it as permanent storage.
 #
 # This targets Perlmutter's CPU nodes only (--constraint=cpu, matching this
 # repo's sbatch scripts): SLATE is built with gpu_backend=none, so it never
@@ -25,12 +30,17 @@ set -euo pipefail
 
 DISTR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+if [ -z "${PSCRATCH:-}" ]; then
+    echo "Error: \$PSCRATCH is not set -- are you on a Perlmutter login/compute node?" >&2
+    exit 1
+fi
+
 SLATE_VERSION="2025.05.28"
 SLATE_TARBALL="slate-${SLATE_VERSION}.tar.gz"
 SLATE_URL="https://github.com/icl-utk-edu/slate/releases/download/v${SLATE_VERSION}/${SLATE_TARBALL}"
 
-SLATE_SRC_DIR="${SLATE_SRC_DIR:-$HOME/builds/slate-${SLATE_VERSION}}"
-SLATE_PREFIX="${SLATE_PREFIX:-$HOME/builds/slate-install}"
+SLATE_SRC_DIR="${SLATE_SRC_DIR:-$PSCRATCH/builds/slate-${SLATE_VERSION}}"
+SLATE_PREFIX="${SLATE_PREFIX:-$PSCRATCH/builds/slate-install}"
 
 echo "SLATE source:   ${SLATE_SRC_DIR}"
 echo "SLATE prefix:   ${SLATE_PREFIX}"
@@ -99,4 +109,4 @@ echo
 echo "Done."
 echo "Before submitting jobs, either export SLATE_LIB_DIR=${SLATE_PREFIX}/lib"
 echo "or edit sbatch/baseline_node*.sbatch if this prefix differs from their"
-echo "current default (\$HOME/builds/slate-install/lib)."
+echo "current default (\$PSCRATCH/builds/slate-install/lib)."
