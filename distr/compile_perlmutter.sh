@@ -3,18 +3,29 @@
 # SLATE (+ its bundled blaspp/lapackpp), then ./main (wbp/rrp/bcp) and
 # ./baseline (the SLATE baseline), all with Cray compiler wrappers.
 #
-# Run this on a login node (or in an interactive `salloc --constraint=cpu`
-# session) from the distr/ directory:
+# Run this inside an interactive compute-node allocation, from the distr/
+# directory:
+#   salloc -N 1 -C cpu -q interactive -t 00:30:00 -A m4341
 #   ./compile_perlmutter.sh
+#
+# Do NOT just run this on a login node: SLATE's heaviest source files
+# (e.g. getrf_tntpiv.cc) can each need several GB of RAM to compile, and
+# login nodes are shared with a small per-user memory cap, so `cc1plus`
+# gets OOM-killed ("Killed signal terminated program cc1plus"). This script
+# will warn and fall back to a conservative -j if it detects it's not
+# running inside an allocation (no $SLURM_JOB_ID), but that's a fallback,
+# not a recommendation -- it can still OOM on a busy login node.
 #
 # Safe to re-run: skips the SLATE download/build/install if already present
 # at SLATE_PREFIX, and always rebuilds main/baseline (cheap).
 #
 # Env vars (all optional):
-#   SLATE_SRC_DIR   where to download/extract SLATE source
-#                     (default: $PSCRATCH/builds/slate-2025.05.28)
-#   SLATE_PREFIX    where to install SLATE
-#                     (default: $PSCRATCH/builds/slate-install)
+#   SLATE_SRC_DIR    where to download/extract SLATE source
+#                      (default: $PSCRATCH/builds/slate-2025.05.28)
+#   SLATE_PREFIX     where to install SLATE
+#                      (default: $PSCRATCH/builds/slate-install)
+#   SLATE_BUILD_JOBS parallelism for `make -j` when building SLATE
+#                      (default: 16 inside an allocation, 4 on a login node)
 #
 # Installs under $PSCRATCH rather than $HOME: the SLATE source + build tree
 # is a few GB, which does not fit in NERSC's much smaller home quota.
@@ -42,8 +53,27 @@ SLATE_URL="https://github.com/icl-utk-edu/slate/releases/download/v${SLATE_VERSI
 SLATE_SRC_DIR="${SLATE_SRC_DIR:-$PSCRATCH/builds/slate-${SLATE_VERSION}}"
 SLATE_PREFIX="${SLATE_PREFIX:-$PSCRATCH/builds/slate-install}"
 
+if [ -z "${SLATE_BUILD_JOBS:-}" ]; then
+    if [ -n "${SLURM_JOB_ID:-}" ]; then
+        # Inside an allocation: still cap well below nproc (128 cores on a
+        # Perlmutter CPU node) since individual translation units can spike
+        # to several GB each -- $(nproc) concurrent cc1plus would still OOM.
+        SLATE_BUILD_JOBS=16
+    else
+        SLATE_BUILD_JOBS=4
+        echo "Warning: no \$SLURM_JOB_ID detected -- this looks like a login node." >&2
+        echo "SLATE's heaviest source files can OOM-kill cc1plus there even at" >&2
+        echo "low parallelism. Strongly prefer building inside an interactive" >&2
+        echo "allocation instead:" >&2
+        echo "  salloc -N 1 -C cpu -q interactive -t 00:30:00 -A m4341" >&2
+        echo "Continuing here with -j${SLATE_BUILD_JOBS}..." >&2
+        echo >&2
+    fi
+fi
+
 echo "SLATE source:   ${SLATE_SRC_DIR}"
 echo "SLATE prefix:   ${SLATE_PREFIX}"
+echo "Build jobs:     ${SLATE_BUILD_JOBS}"
 echo
 
 # --- Step 1: fetch SLATE source, if needed -----------------------------------
@@ -86,7 +116,7 @@ prefix = ${SLATE_PREFIX}
 EOF
 
     echo "==> Building SLATE library (this can take a while)..."
-    ( cd "${SLATE_SRC_DIR}" && make -j"$(nproc)" lib )
+    ( cd "${SLATE_SRC_DIR}" && make -j"${SLATE_BUILD_JOBS}" lib )
 
     echo "==> Installing SLATE to ${SLATE_PREFIX}..."
     ( cd "${SLATE_SRC_DIR}" && make install )
