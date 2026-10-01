@@ -1,0 +1,8 @@
+Experiment: 100x100x100x100 512 ranks baseline (nb=256, grid=16x32)
+Mean Redistribution (comm only): 0.032120 | Mean A~x (comm+comp): 0.171049 | Mean A~^Tx (comm+comp): 0.002088
+Experiment: 475x475x475x475 512 ranks baseline (nb=256, grid=16x32)
+Mean Redistribution (comm only): 4.857145 | Mean A~x (comm+comp): 0.321329 | Mean A~^Tx (comm+comp): 0.350812
+Experiment: 200x200x1000x1000 512 ranks baseline (nb=256, grid=16x32)
+Mean Redistribution (comm only): 3.810716 | Mean A~x (comm+comp): 0.259367 | Mean A~^Tx (comm+comp): 0.288105
+Experiment: 1000x1000x200x200 512 ranks baseline (nb=256, grid=16x32)
+Mean Redistribution (comm only): 3.869232 | Mean A~x (comm+comp): 0.262581 | Mean A~^Tx (comm+comp): 0.279137

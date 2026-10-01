@@ -1,0 +1,14 @@
+Experiment: 100x100x100x100 128 ranks baseline (nb=256, grid=8x16)
+Mean Redistribution (comm only): 0.007502 | Mean A~x (comm+comp): 0.186881 | Mean A~^Tx (comm+comp): 0.002602
+[2026-09-10T18:16:57.954] error: Detected 1 oom_kill event in StepId=58166727.1. Some of the step tasks have been OOM Killed.
+srun: error: nid006742: task 75: Out Of Memory
+srun: Terminating StepId=58166727.1
+[2026-09-10T18:17:13.056] error: *** STEP 58166727.1 ON nid006742 CANCELLED AT 2026-09-10T18:17:13 DUE TO TASK FAILURE ***
+[2026-09-10T18:17:34.270] error: Detected 1 oom_kill event in StepId=58166727.2. Some of the step tasks have been OOM Killed.
+srun: error: nid006742: task 8: Out Of Memory
+srun: Terminating StepId=58166727.2
+[2026-09-10T18:17:44.183] error: *** STEP 58166727.2 ON nid006742 CANCELLED AT 2026-09-10T18:17:44 DUE TO TASK FAILURE ***
+[2026-09-10T18:18:05.256] error: Detected 1 oom_kill event in StepId=58166727.3. Some of the step tasks have been OOM Killed.
+srun: error: nid006742: task 6: Out Of Memory
+srun: Terminating StepId=58166727.3
+[2026-09-10T18:18:19.997] error: *** STEP 58166727.3 ON nid006742 CANCELLED AT 2026-09-10T18:18:19 DUE TO TASK FAILURE ***
