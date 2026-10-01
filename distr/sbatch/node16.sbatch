@@ -42,3 +42,17 @@ run_experiment 1000 1000 200 200 Ax rrp
 run_experiment 1000 1000 200 200 ATx rrp
 run_experiment 1000 1000 200 200 Ax bcp
 run_experiment 1000 1000 200 200 ATx bcp
+
+run_experiment 600 600 400 400 Ax wbp
+run_experiment 600 600 400 400 ATx wbp
+run_experiment 600 600 400 400 Ax rrp
+run_experiment 600 600 400 400 ATx rrp
+run_experiment 600 600 400 400 Ax bcp
+run_experiment 600 600 400 400 ATx bcp
+
+run_experiment 400 400 600 600 Ax wbp
+run_experiment 400 400 600 600 ATx wbp
+run_experiment 400 400 600 600 Ax rrp
+run_experiment 400 400 600 600 ATx rrp
+run_experiment 400 400 600 600 Ax bcp
+run_experiment 400 400 600 600 ATx bcp
