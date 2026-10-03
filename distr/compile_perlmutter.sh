@@ -138,5 +138,5 @@ echo "==> Building ${DISTR_DIR}/baseline..."
 echo
 echo "Done."
 echo "Before submitting jobs, either export SLATE_LIB_DIR=${SLATE_PREFIX}/lib"
-echo "or edit sbatch/baseline_node*.sbatch if this prefix differs from their"
+echo "or edit sbatch/baseline_*.sbatch if this prefix differs from their"
 echo "current default (\$PSCRATCH/builds/slate-install/lib)."

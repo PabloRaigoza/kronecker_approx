@@ -106,8 +106,11 @@ int main(int argc, char **argv) {
     }
 
     // --- Step 2: A~ as a real SLATE 2-D block-cyclic distributed matrix -----
+    // Tiles are only allocated after the redistribution (insertLocalTiles
+    // below): until then only the distribution (tileRank / nt) is needed.
+    // Together with freeing A_local and send_buf as soon as they are
+    // consumed, this keeps peak memory at ~2x A~ instead of ~4x.
     slate::Matrix<double> A_tilde(M_tilde, N_tilde, nb, p, q, MPI_COMM_WORLD);
-    A_tilde.insertLocalTiles();
     const int64_t nt = A_tilde.nt();  // tile columns
 
     // --- Step 3: work out where each local A-block's data must go -----------
@@ -167,6 +170,7 @@ int main(int argc, char **argv) {
             }
         }
     }
+    std::vector<double>().swap(A_local);  // fully copied into send_buf
     std::vector<double> recv_buf(recv_total);
 
     // --- Timed: the pure re-permutation communication ------------------------
@@ -180,6 +184,8 @@ int main(int argc, char **argv) {
         redistribute_time += MPI_Wtime() - t0;
     }
     redistribute_time /= trials;
+    std::vector<double>().swap(send_buf);
+    A_tilde.insertLocalTiles();
 
     // --- Step 4: unpack recv_buf into A~'s local SLATE tiles -----------------
     // recv_buf's segment for source rank `src` (recv_displs[src] .. +
@@ -219,6 +225,7 @@ int main(int argc, char **argv) {
             }
         }
     }
+    std::vector<double>().swap(recv_buf);
 
     // --- Step 5: vectors as skinny (n x 1) SLATE matrices ---------------------
     slate::Matrix<double> V(N_tilde, 1, nb, p, q, MPI_COMM_WORLD);  // input to A~*x
@@ -265,10 +272,16 @@ int main(int argc, char **argv) {
     atx_time /= trials;
 
     // --- Report ----------------------------------------------------------------
+    // Mean over ranks, plus max over ranks (what the WBP/RRP/BCP benchmarks
+    // report, so the Max line is the one to compare against them).
     double total_redistribute = 0.0, total_ax = 0.0, total_atx = 0.0;
     MPI_Reduce(&redistribute_time, &total_redistribute, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&ax_time, &total_ax, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&atx_time, &total_atx, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    double max_redistribute = 0.0, max_ax = 0.0, max_atx = 0.0;
+    MPI_Reduce(&redistribute_time, &max_redistribute, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&ax_time, &max_ax, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&atx_time, &max_atx, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (world_rank == 0) {
         total_redistribute /= world_size;
@@ -279,6 +292,9 @@ int main(int argc, char **argv) {
         printf("Mean Redistribution (comm only): %.6f | Mean A~x (comm+comp): %.6f | "
                "Mean A~^Tx (comm+comp): %.6f\n",
                total_redistribute, total_ax, total_atx);
+        printf("Max Redistribution (comm only): %.6f | Max A~x (comm+comp): %.6f | "
+               "Max A~^Tx (comm+comp): %.6f\n",
+               max_redistribute, max_ax, max_atx);
     }
 
     MPI_Finalize();

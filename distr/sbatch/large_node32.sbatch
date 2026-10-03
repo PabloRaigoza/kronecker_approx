@@ -6,7 +6,7 @@
 #SBATCH --nodes=32
 #SBATCH --ntasks=4096
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
+#SBATCH --time=00:45:00
 
 source sbatch/experiments.sh
 run_large_matrices

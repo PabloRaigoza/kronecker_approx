@@ -1,35 +1,47 @@
 #!/usr/bin/env bash
-# Submit SLURM jobs for the SLATE baseline (see baseline.cpp) to a named run
-# directory, sweeping the same node counts / matrix sizes as submit.sh does
-# for wbp/rrp/bcp.
+# Submit SLURM jobs comparing the SLATE baseline (see baseline.cpp) with
+# WBP/RRP/BCP to a named run directory. Each job runs, per matrix, the
+# baseline (one-time repermutation + slate::gemm Ax/ATx) and our Ax/ATx for
+# every scheme on the same nodes; matrix lists are shared with submit.sh
+# (sbatch/experiments.sh). Matrices whose Ã exceeds SLATE_MAX_GB_PER_NODE
+# per node are skipped, since the baseline peaks at ~2x Ã.
 #
 # Usage:
-#   ./submit_baseline.sh <run_name> [node1|node2|node4|node8|node16 ...]
+#   ./submit_baseline.sh <run_name> [medium|large|all|medium_node1|...|large_node4|... ...]
 #
 # Examples:
-#   ./submit_baseline.sh brun1                    # submit all node configs
-#   ./submit_baseline.sh brun1 node1 node8        # submit only node1 and node8
+#   ./submit_baseline.sh brun2                    # medium matrices on 1-32 nodes (= medium)
+#   ./submit_baseline.sh brun2 all                # medium + large
+#   ./submit_baseline.sh brun2 medium_node1 large_node8
+#   ./submit_baseline.sh brun2 large              # large matrices on 4-32 nodes
 #
-# Build ./baseline first (see the `baseline` makefile target), and make sure
-# SLATE_LIB_DIR is set correctly in sbatch/baseline_node*.sbatch (or exported
-# in your environment before submitting) so the jobs can find libslate.so.
+# Build ./baseline first (make baseline / baseline_perlmutter) and ./main,
+# and export SLATE_LIB_DIR if SLATE is not in $PSCRATCH/builds/slate-install
+# so the jobs can find libslate.so.
 set -euo pipefail
 
 DISTR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-    echo "Usage: $0 <run_name> [node1|node2|node4|node8|node16 ...]"
+    echo "Usage: $0 <run_name> [medium|large|all|medium_node1|...|large_node4|... ...]"
     exit 1
 }
 
 [ $# -lt 1 ] && usage
 RUN_NAME="$1"; shift
 
-if [ $# -gt 0 ]; then
-    CONFIGS=("$@")
-else
-    CONFIGS=(node1 node2 node4 node8 node16)
-fi
+MEDIUM=(medium_node1 medium_node2 medium_node4 medium_node8 medium_node16 medium_node32)
+LARGE=(large_node4 large_node8 large_node16 large_node32)
+# Expand the shortcuts medium / large / all; anything else is a config name
+CONFIGS=()
+for arg in "${@:-medium}"; do
+    case "$arg" in
+        medium) CONFIGS+=("${MEDIUM[@]}") ;;
+        large)  CONFIGS+=("${LARGE[@]}") ;;
+        all)    CONFIGS+=("${MEDIUM[@]}" "${LARGE[@]}") ;;
+        *)      CONFIGS+=("$arg") ;;
+    esac
+done
 
 if [ ! -x "${DISTR_DIR}/baseline" ]; then
     echo "Warning: ${DISTR_DIR}/baseline not found or not executable -- build it first (make baseline)."

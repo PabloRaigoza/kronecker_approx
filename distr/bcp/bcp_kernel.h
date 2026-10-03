@@ -10,14 +10,13 @@
 // Single-shot kernels (see wbp_kernel.h for the contract).
 // ------------------------------------------------------------------
 void do_ax(BCPContext* ctx, KernelTimers* t, bool sync) {
-    if (sync) MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
+    double t0 = phase_start(&t->barrier, sync);
     MPI_Allgatherv(ctx->v_send, ctx->v_send_size, MPI_DOUBLE,
            ctx->v_recv, ctx->recvcounts_v, ctx->displs_v, MPI_DOUBLE,
            ctx->v_comm);
-    double t1 = MPI_Wtime();
+    double e1 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    double t1 = phase_start(&t->barrier, sync);
     cblas_dgemv(CblasRowMajor, CblasNoTrans,
                 ctx->u_recv_size, // rows of local_A
                 ctx->v_recv_size,     // cols of local_A
@@ -29,26 +28,25 @@ void do_ax(BCPContext* ctx, KernelTimers* t, bool sync) {
                 0.0,                   // beta
                 ctx->u_recv,          // y
                 1);                    // incy
-    double t2 = MPI_Wtime();
+    double e2 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t2 = MPI_Wtime(); }
+    double t2 = phase_start(&t->barrier, sync);
     MPI_Reduce_scatter(ctx->u_recv, ctx->u_send, ctx->recvcounts_u, MPI_DOUBLE, MPI_SUM, ctx->u_comm);
     double t3 = MPI_Wtime();
 
-    t->all_gather += t1 - t0;
-    t->computation += t2 - t1;
+    t->all_gather += e1 - t0;
+    t->computation += e2 - t1;
     t->reduce_scatter += t3 - t2;
 }
 
 void do_atx(BCPContext* ctx, KernelTimers* t, bool sync) {
-    if (sync) MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
+    double t0 = phase_start(&t->barrier, sync);
     MPI_Allgatherv(ctx->u_send, ctx->u_send_size, MPI_DOUBLE,
            ctx->u_recv, ctx->recvcounts_u, ctx->displs_u, MPI_DOUBLE,
            ctx->u_comm);
-    double t1 = MPI_Wtime();
+    double e1 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    double t1 = phase_start(&t->barrier, sync);
     cblas_dgemv(CblasRowMajor, CblasTrans,
                 ctx->u_recv_size, // rows of local_A
                 ctx->v_recv_size,     // cols of local_A
@@ -60,14 +58,14 @@ void do_atx(BCPContext* ctx, KernelTimers* t, bool sync) {
                 0.0,                   // beta
                 ctx->v_recv,          // y
                 1);                    // incy
-    double t2 = MPI_Wtime();
+    double e2 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t2 = MPI_Wtime(); }
+    double t2 = phase_start(&t->barrier, sync);
     MPI_Reduce_scatter(ctx->v_recv, ctx->v_send, ctx->recvcounts_v, MPI_DOUBLE, MPI_SUM, ctx->v_comm);
     double t3 = MPI_Wtime();
 
-    t->all_gather += t1 - t0;
-    t->computation += t2 - t1;
+    t->all_gather += e1 - t0;
+    t->computation += e2 - t1;
     t->reduce_scatter += t3 - t2;
 }
 

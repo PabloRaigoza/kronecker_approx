@@ -14,14 +14,13 @@
 // timings are not polluted by load imbalance from the previous phase.
 // ------------------------------------------------------------------
 void do_ax(WBPContext* ctx, KernelTimers* t, bool sync) {
-    if (sync) MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
+    double t0 = phase_start(&t->barrier, sync);
     MPI_Allgatherv(ctx->v_send, ctx->v_send_size, MPI_DOUBLE,
            ctx->v_recv, ctx->recvcounts_v, ctx->displs_v, MPI_DOUBLE,
            MPI_COMM_WORLD);
-    double t1 = MPI_Wtime();
+    double e1 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    double t1 = phase_start(&t->barrier, sync);
     cblas_dgemv(CblasRowMajor, CblasNoTrans,
                 ctx->num_local_blocks, // rows of local_A
                 ctx->m2 * ctx->n2,     // cols of local_A
@@ -35,13 +34,12 @@ void do_ax(WBPContext* ctx, KernelTimers* t, bool sync) {
                 1);                    // incy
     double t2 = MPI_Wtime();
 
-    t->all_gather += t1 - t0;
+    t->all_gather += e1 - t0;
     t->computation += t2 - t1;
 }
 
 void do_atx(WBPContext* ctx, KernelTimers* t, bool sync) {
-    if (sync) MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
+    double t0 = phase_start(&t->barrier, sync);
     // BLAS quick-returns without writing y when this rank owns no rows
     if (ctx->num_local_blocks == 0) memset(ctx->v_recv, 0, (size_t)ctx->v_recv_size * sizeof(double));
     cblas_dgemv(CblasRowMajor, CblasTrans,
@@ -55,13 +53,13 @@ void do_atx(WBPContext* ctx, KernelTimers* t, bool sync) {
                 0.0,                   // beta
                 ctx->v_recv,          // y
                 1);                    // incy
-    double t1 = MPI_Wtime();
+    double e1 = MPI_Wtime();
 
-    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    double t1 = phase_start(&t->barrier, sync);
     MPI_Reduce_scatter(ctx->v_recv, ctx->v_send, ctx->recvcounts_v, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     double t2 = MPI_Wtime();
 
-    t->computation += t1 - t0;
+    t->computation += e1 - t0;
     t->reduce_scatter += t2 - t1;
 }
 

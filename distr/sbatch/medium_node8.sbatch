@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=kron_node8
+#SBATCH --job-name=kron_medium_node8
 #SBATCH --account=m4341
 #SBATCH --constraint=cpu
 #SBATCH --qos=regular

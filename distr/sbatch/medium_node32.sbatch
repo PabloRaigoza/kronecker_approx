@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=kron_large_node4
+#SBATCH --job-name=kron_medium_node32
 #SBATCH --account=m4341
 #SBATCH --constraint=cpu
 #SBATCH --qos=regular
-#SBATCH --nodes=4
-#SBATCH --ntasks=512
+#SBATCH --nodes=32
+#SBATCH --ntasks=4096
 #SBATCH --cpus-per-task=1
-#SBATCH --time=01:30:00
+#SBATCH --time=00:45:00
 
 source sbatch/experiments.sh
-run_large_matrices
+run_medium_matrices

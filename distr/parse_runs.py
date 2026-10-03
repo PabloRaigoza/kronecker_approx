@@ -17,6 +17,11 @@ Output file format expected (normal mode):
 Per-rank/debug mode format (when per_rank_timings=true in main.cpp):
     Rank 0: Local All Gather Time: 0.000549123 | Local Computation Time: 0.001703456
 
+SLATE baseline format (op "slate", see baseline.cpp; its own "Experiment:" line is ignored):
+    Experiment: 400x400x400x400 512 slate ranks slate
+    Mean Redistribution (comm only): ... | Mean A~x (comm+comp): ... | Mean A~^Tx (comm+comp): ...
+    Max Redistribution (comm only): ... | Max A~x (comm+comp): ... | Max A~^Tx (comm+comp): ...
+
 Golub-Kahan bidiagonalization format (op "bidiag" or "bidiag_reorth"):
     Experiment: 200x200x200x200 128 bidiag ranks bcp
     Bidiag Steps: 50 | Sigma1: 1.8e+03 | Alpha Sum: ... | Beta Sum: ...
@@ -24,6 +29,9 @@ Golub-Kahan bidiagonalization format (op "bidiag" or "bidiag_reorth"):
     Bidiag Kernel Fraction: Mean 0.91 | Min 0.88 | Max 0.95
     Bidiag Ax (max): All Gather: ... | Computation: ... | Reduce Scatter: ... | Total: ...
     Bidiag ATx (max): All Gather: ... | Computation: ... | Reduce Scatter: ... | Total: ...
+    Bidiag Mean Breakdown: Total: ... | Ax All Gather: ... | ... | Reductions: ... | Vector Ops: ... | Barrier: ...
+    (Sync / Max Barrier / Barrier appear in runs with the optional GKB barriers;
+    older runs leave those fields empty)
 """
 
 import re
@@ -48,11 +56,13 @@ NUM = r"([\d.eE+\-]+)"
 BIDIAG_PAT = {
     "steps":         re.compile(r"Bidiag Steps:\s*(\d+)"),
     "sigma1":        re.compile(r"Bidiag Steps:.*Sigma1:\s*" + NUM),
+    "sync":          re.compile(r"Bidiag Steps:.*Sync:\s*(\d+)"),
     "bd_total":      re.compile(r"Bidiag Max Total:\s*" + NUM),
     "bd_kernel":     re.compile(r"Bidiag Max Total:.*Max Kernel:\s*" + NUM),
     "bd_other":      re.compile(r"Bidiag Max Total:.*Max Other:\s*" + NUM),
     "bd_reductions": re.compile(r"Bidiag Max Total:.*Max Reductions:\s*" + NUM),
     "bd_vector_ops": re.compile(r"Bidiag Max Total:.*Max Vector Ops:\s*" + NUM),
+    "bd_barrier":    re.compile(r"Bidiag Max Total:.*Max Barrier:\s*" + NUM),
     "kernel_frac_mean": re.compile(r"Bidiag Kernel Fraction:\s*Mean\s*" + NUM),
     "kernel_frac_min":  re.compile(r"Bidiag Kernel Fraction:.*Min\s*" + NUM),
     "kernel_frac_max":  re.compile(r"Bidiag Kernel Fraction:.*Max\s*" + NUM),
@@ -64,7 +74,28 @@ for _k in ("Ax", "ATx"):
     BIDIAG_PAT[f"bd_{_name}_computation"]    = re.compile(_pre + r"Computation:\s*" + NUM)
     BIDIAG_PAT[f"bd_{_name}_reduce_scatter"] = re.compile(_pre + r"Reduce Scatter:\s*" + NUM)
     BIDIAG_PAT[f"bd_{_name}_total"]          = re.compile(_pre + r"Total:\s*" + NUM)
+# Per-rank means (these add up to mean_total; the max fields above do not)
+_MEAN_PRE = r"Bidiag Mean Breakdown:.*"
+for _field, _label in (("mean_total", "Total"),
+                       ("mean_ax_all_gather", "Ax All Gather"), ("mean_ax_computation", "Ax Computation"),
+                       ("mean_ax_reduce_scatter", "Ax Reduce Scatter"),
+                       ("mean_atx_all_gather", "ATx All Gather"), ("mean_atx_computation", "ATx Computation"),
+                       ("mean_atx_reduce_scatter", "ATx Reduce Scatter"),
+                       ("mean_reductions", "Reductions"), ("mean_vector_ops", "Vector Ops"),
+                       ("mean_barrier", "Barrier")):
+    BIDIAG_PAT[_field] = re.compile(_MEAN_PRE + r"\b" + _label + r":\s*" + NUM)
 BIDIAG_FIELDS = list(BIDIAG_PAT.keys())
+
+# SLATE baseline (op "slate"): one-time repermutation (comm only) and
+# slate::gemm Ax / ATx (comm + comp together); max and mean over ranks
+SLATE_PAT = {}
+for _stat in ("max", "mean"):
+    _pre = rf"{_stat.capitalize()} Redistribution \(comm only\):.*"
+    SLATE_PAT[f"slate_redistribution_{_stat}"] = re.compile(
+        rf"{_stat.capitalize()} Redistribution \(comm only\):\s*" + NUM)
+    SLATE_PAT[f"slate_ax_{_stat}"] = re.compile(_pre + r"A~x \(comm\+comp\):\s*" + NUM)
+    SLATE_PAT[f"slate_atx_{_stat}"] = re.compile(_pre + r"A~\^Tx \(comm\+comp\):\s*" + NUM)
+SLATE_FIELDS = list(SLATE_PAT.keys())
 LOCAL_PAT = {
     "all_gather":     re.compile(r"Local All Gather Time:\s*([\d.eE+\-]+)"),
     "computation":    re.compile(r"Local Computation Time:\s*([\d.eE+\-]+)"),
@@ -75,6 +106,10 @@ FAILED_PAT = re.compile(r"srun:.*Force Terminated|srun:.*error|slurmstepd:.*erro
 
 def is_bidiag(r):
     return r["op"].startswith("bidiag")
+
+
+def is_slate(r):
+    return r["op"] == "slate"
 
 # ── Parsing ──────────────────────────────────────────────────────────────────
 
@@ -106,6 +141,7 @@ def parse_file(path):
                 "all_gather": None, "computation": None, "reduce_scatter": None,
                 "failed": False, "per_rank": [],
                 **{k: None for k in BIDIAG_FIELDS},
+                **{k: None for k in SLATE_FIELDS},
             }
             records.append(current)
             continue
@@ -117,11 +153,18 @@ def parse_file(path):
             current["failed"] = True
             continue
 
+        if "Redistribution (comm only)" in line:
+            for key, pat in SLATE_PAT.items():
+                m = pat.search(line)
+                if m:
+                    current[key] = float(m.group(1))
+            continue
+
         if line.startswith("Bidiag "):
             for key, pat in BIDIAG_PAT.items():
                 m = pat.search(line)
                 if m:
-                    current[key] = int(m.group(1)) if key == "steps" else float(m.group(1))
+                    current[key] = int(m.group(1)) if key in ("steps", "sync") else float(m.group(1))
             continue
 
         # Mean aggregated line
@@ -146,7 +189,12 @@ def parse_file(path):
 
     # A run that printed its header but no timings died (OOM, time limit, ...)
     for r in records:
-        timings = [r["bd_total"]] if is_bidiag(r) else [r["all_gather"], r["computation"], r["reduce_scatter"]]
+        if is_bidiag(r):
+            timings = [r["bd_total"]]
+        elif is_slate(r):
+            timings = [r["slate_redistribution_max"], r["slate_redistribution_mean"]]
+        else:
+            timings = [r["all_gather"], r["computation"], r["reduce_scatter"]]
         if all(t is None for t in timings):
             r["failed"] = True
     return records
@@ -195,7 +243,7 @@ def print_table(data, show_failed, show_debug):
         print(f"  {'-'*105}")
 
         for r in records:
-            if is_bidiag(r) or (r["failed"] and not show_failed):
+            if is_bidiag(r) or is_slate(r) or (r["failed"] and not show_failed):
                 continue
             size = f"{r['m1']}x{r['n1']}x{r['m2']}x{r['n2']}"
             if r["failed"]:
@@ -213,6 +261,17 @@ def print_table(data, show_failed, show_debug):
                 for pr in sorted(r["per_rank"], key=lambda x: x["rank"]):
                     print(f"    {pr['rank']:>6}  {fmt(pr['all_gather'], 12)}  "
                           f"{fmt(pr['computation'], 12)}  {fmt(pr['reduce_scatter'], 12)}")
+
+        slate = [r for r in records if is_slate(r) and (show_failed or not r["failed"])]
+        if slate:
+            print(f"\n  SLATE baseline (max over ranks): one-time repermutation (comm only), gemm Ax / ATx (comm+comp)")
+            print(f"  {'Size':<22} {'Ranks':>6}  {'Repermute':>10}  {'Ax':>10}  {'ATx':>10}  Status")
+            print(f"  {'-'*75}")
+            for r in slate:
+                size = f"{r['m1']}x{r['n1']}x{r['m2']}x{r['n2']}"
+                status = "FAILED" if r["failed"] else ""
+                print(f"  {size:<22} {r['ranks']:>6}  {fmt(r['slate_redistribution_max'])}  "
+                      f"{fmt(r['slate_ax_max'])}  {fmt(r['slate_atx_max'])}  {status}")
 
         bidiag = [r for r in records if is_bidiag(r) and (show_failed or not r["failed"])]
         if bidiag:
@@ -240,7 +299,7 @@ def print_table(data, show_failed, show_debug):
 # "total" is the whole bidiagonalization time and the Ax/ATx phase columns
 # are empty (they live in bd_ax_* / bd_atx_*).
 MEAN_CSV_FIELDS = ["file", "m1", "n1", "m2", "n2", "ranks", "op", "alg",
-                   "all_gather", "computation", "reduce_scatter", "total", "failed"] + BIDIAG_FIELDS
+                   "all_gather", "computation", "reduce_scatter", "total", "failed"] + BIDIAG_FIELDS + SLATE_FIELDS
 RANK_CSV_FIELDS = ["file", "m1", "n1", "m2", "n2", "ranks", "op", "alg",
                    "rank", "all_gather", "computation", "reduce_scatter"]
 
@@ -264,9 +323,12 @@ def write_csv(data, show_failed, show_debug, out=sys.stdout):
                 "total":          "" if not vals else sum(vals),
                 "failed": int(r["failed"]),
                 **{k: "" if r[k] is None else r[k] for k in BIDIAG_FIELDS},
+                **{k: "" if r[k] is None else r[k] for k in SLATE_FIELDS},
             }
             if is_bidiag(r):
                 row["total"] = "" if r["bd_total"] is None else r["bd_total"]
+            elif is_slate(r) and r["slate_ax_max"] is not None and r["slate_atx_max"] is not None:
+                row["total"] = r["slate_ax_max"] + r["slate_atx_max"]  # one Ax + one ATx
             w.writerow(row)
 
     if show_debug:

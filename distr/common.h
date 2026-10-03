@@ -64,8 +64,21 @@ struct KernelTimers {
     double all_gather = 0.0;
     double computation = 0.0;
     double reduce_scatter = 0.0;
+    double barrier = 0.0;  // waiting in sync barriers (load imbalance); not in total()
     double total() const { return all_gather + computation + reduce_scatter; }
 };
+
+// Start of a timed phase. With sync, first wait for every rank in a barrier
+// (accumulated into *barrier) so the phase timing excludes waiting for
+// slower ranks. Returns the phase start time.
+static inline double phase_start(double* barrier, bool sync, MPI_Comm comm = MPI_COMM_WORLD) {
+    if (sync) {
+        double t0 = MPI_Wtime();
+        MPI_Barrier(comm);
+        *barrier += MPI_Wtime() - t0;
+    }
+    return MPI_Wtime();
+}
 
 // The slices of u (length m1*n1) and v (length m2*n2) this rank owns.
 // Across the ranks of `comm`, every global element is owned by exactly
