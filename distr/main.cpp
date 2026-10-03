@@ -14,8 +14,8 @@
 #include "bidiag.h"
 #include "verify.h"
 
-#define NUM_TRIALS 50
-#define NUM_BIDIAG_TRIALS 3
+#define NUM_TRIALS 25
+#define NUM_BIDIAG_TRIALS 1  // each trial already averages over 2k matvecs (k steps)
 
 // Usage: main <m1> <n1> <m2> <n2> <op> <alg> [seed] [k] [reorth]
 //   op:     Ax | ATx | bidiag | verify

@@ -2,17 +2,21 @@
 # Submit SLURM jobs to a named run directory.
 #
 # Usage:
-#   ./submit.sh <run_name> [node1|node2|node4|node8|node16 ...]
+#   ./submit.sh <run_name> [node1|node2|node4|node8|node16|large_node4|large_node8|large_node16|large_node32 ...]
+#
+# node*       : medium matrices (sbatch/experiments.sh: run_medium_matrices)
+# large_node* : large matrices, 4+ nodes (run_large_matrices)
 #
 # Examples:
-#   ./submit.sh run3                    # submit all node configs
+#   ./submit.sh run3                    # submit all medium node configs
 #   ./submit.sh run3 node1 node8        # submit only node1 and node8
+#   ./submit.sh run3 large_node4 large_node8 large_node16 large_node32
 set -euo pipefail
 
 DISTR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 usage() {
-    echo "Usage: $0 <run_name> [node1|node2|node4|node8|node16 ...]"
+    echo "Usage: $0 <run_name> [node1|node2|node4|node8|node16|large_node4|large_node8|large_node16|large_node32 ...]"
     exit 1
 }
 

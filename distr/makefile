@@ -55,5 +55,5 @@ baseline_perlmutter:
 		-Wl,-rpath,$(SLATE_DIR)/lib
 
 plot_run:
-	$(PYTHON) parse_runs.py runs/run4 --csv > runs/run4/results.csv
-	$(PYTHON) plot.py runs/run4/results.csv
+	$(PYTHON) parse_runs.py runs/run6 --csv > runs/run6/results.csv
+	$(PYTHON) plot.py runs/run6/results.csv
