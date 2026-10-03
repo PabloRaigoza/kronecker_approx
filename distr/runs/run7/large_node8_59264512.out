@@ -1,0 +1,210 @@
+Experiment: 500x500x500x500 1024 Ax ranks wbp
+Max All Gather: 0.012763 | Max Computation: 0.187001
+Experiment: 500x500x500x500 1024 ATx ranks wbp
+Max Computation: 0.193734 | Max Reduce Scatter: 0.019536
+Experiment: 500x500x500x500 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 1.249996747814610e+05 | Alpha Sum: 2.585925284949295e+05 | Beta Sum: 2.090836099139480e+05
+Bidiag Max Total: 4.060963 | Max Kernel: 4.047578 | Max Other: 0.394127 | Max Reductions: 0.393572 | Max Vector Ops: 0.000631
+Bidiag Kernel Fraction: Mean 0.9774 | Min 0.9029 | Max 0.9968
+Bidiag Ax (max): All Gather: 0.178879 | Computation: 1.882447 | Reduce Scatter: 0.000000 | Total: 1.978140
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 1.961438 | Reduce Scatter: 0.246043 | Total: 2.071802
+Experiment: 500x500x500x500 1024 Ax ranks rrp
+Max All Gather: 0.008394 | Max Computation: 0.275701 | Max Reduce Scatter: 0.000086
+Experiment: 500x500x500x500 1024 ATx ranks rrp
+Max All Gather: 0.000142 | Max Computation: 0.271795 | Max Reduce Scatter: 0.008119
+Experiment: 500x500x500x500 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 1.249996747814610e+05 | Alpha Sum: 2.767325763111550e+05 | Beta Sum: 1.913226938370805e+05
+Bidiag Max Total: 5.637928 | Max Kernel: 5.628623 | Max Other: 2.870106 | Max Reductions: 2.869465 | Max Vector Ops: 0.000857
+Bidiag Kernel Fraction: Mean 0.8154 | Min 0.4909 | Max 0.9984
+Bidiag Ax (max): All Gather: 0.105624 | Computation: 2.742023 | Reduce Scatter: 1.500909 | Total: 2.833081
+Bidiag ATx (max): All Gather: 0.001896 | Computation: 2.744483 | Reduce Scatter: 1.493970 | Total: 2.796802
+Experiment: 500x500x500x500 1024 Ax ranks bcp
+Max All Gather: 0.001037 | Max Computation: 0.213712 | Max Reduce Scatter: 0.000190
+Experiment: 500x500x500x500 1024 ATx ranks bcp
+Max All Gather: 0.000138 | Max Computation: 0.213514 | Max Reduce Scatter: 0.001891
+Experiment: 500x500x500x500 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 1.249996747814610e+05 | Alpha Sum: 2.522732217751226e+05 | Beta Sum: 1.964847540304676e+05
+Bidiag Max Total: 4.288128 | Max Kernel: 4.285148 | Max Other: 0.636909 | Max Reductions: 0.636345 | Max Vector Ops: 0.000629
+Bidiag Kernel Fraction: Mean 0.9669 | Min 0.8515 | Max 0.9994
+Bidiag Ax (max): All Gather: 0.017083 | Computation: 2.134225 | Reduce Scatter: 0.101929 | Total: 2.142939
+Bidiag ATx (max): All Gather: 0.002626 | Computation: 2.137829 | Reduce Scatter: 0.614513 | Total: 2.142889
+Experiment: 600x600x600x600 1024 Ax ranks wbp
+Max All Gather: 0.017457 | Max Computation: 0.390676
+Experiment: 600x600x600x600 1024 ATx ranks wbp
+Max Computation: 0.400455 | Max Reduce Scatter: 0.026012
+Experiment: 600x600x600x600 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 1.799997931134604e+05 | Alpha Sum: 3.437390023982596e+05 | Beta Sum: 3.111343694011722e+05
+Bidiag Max Total: 8.263474 | Max Kernel: 8.241989 | Max Other: 0.555071 | Max Reductions: 0.554367 | Max Vector Ops: 0.000785
+Bidiag Kernel Fraction: Mean 0.9794 | Min 0.9328 | Max 0.9974
+Bidiag Ax (max): All Gather: 0.263215 | Computation: 3.931746 | Reduce Scatter: 0.000000 | Total: 4.080207
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 4.054222 | Reduce Scatter: 0.381402 | Total: 4.164869
+Experiment: 600x600x600x600 1024 Ax ranks rrp
+Max All Gather: 0.017353 | Max Computation: 0.591045 | Max Reduce Scatter: 0.000081
+Experiment: 600x600x600x600 1024 ATx ranks rrp
+Max All Gather: 0.000143 | Max Computation: 0.601738 | Max Reduce Scatter: 0.020233
+Experiment: 600x600x600x600 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 1.799997931134604e+05 | Alpha Sum: 3.492618749947291e+05 | Beta Sum: 3.108552709769236e+05
+Bidiag Max Total: 12.135422 | Max Kernel: 12.120757 | Max Other: 2.751753 | Max Reductions: 2.750510 | Max Vector Ops: 0.000742
+Bidiag Kernel Fraction: Mean 0.8194 | Min 0.7732 | Max 0.9988
+Bidiag Ax (max): All Gather: 0.252464 | Computation: 5.910790 | Reduce Scatter: 0.470935 | Total: 6.059629
+Bidiag ATx (max): All Gather: 0.001536 | Computation: 5.965717 | Reduce Scatter: 2.712798 | Total: 6.061278
+Experiment: 600x600x600x600 1024 Ax ranks bcp
+Max All Gather: 0.001551 | Max Computation: 0.460231 | Max Reduce Scatter: 0.000202
+Experiment: 600x600x600x600 1024 ATx ranks bcp
+Max All Gather: 0.000270 | Max Computation: 0.459991 | Max Reduce Scatter: 0.002814
+Experiment: 600x600x600x600 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 1.799997931134604e+05 | Alpha Sum: 3.438449250045639e+05 | Beta Sum: 3.113932406649003e+05
+Bidiag Max Total: 9.236379 | Max Kernel: 9.232527 | Max Other: 1.062788 | Max Reductions: 1.062223 | Max Vector Ops: 0.000758
+Bidiag Kernel Fraction: Mean 0.9567 | Min 0.8849 | Max 0.9996
+Bidiag Ax (max): All Gather: 0.027726 | Computation: 4.604215 | Reduce Scatter: 0.319904 | Total: 4.618759
+Bidiag ATx (max): All Gather: 0.013136 | Computation: 4.605588 | Reduce Scatter: 1.117868 | Total: 4.614005
+Experiment: 2000x2000x200x200 1024 Ax ranks wbp
+Max All Gather: 0.002041 | Max Computation: 0.532331
+Experiment: 2000x2000x200x200 1024 ATx ranks wbp
+Max Computation: 0.531279 | Max Reduce Scatter: 0.002719
+Experiment: 2000x2000x200x200 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 2.000004577552430e+05 | Alpha Sum: 3.986518545476749e+05 | Beta Sum: 3.136654010610450e+05
+Bidiag Max Total: 10.657955 | Max Kernel: 10.652944 | Max Other: 0.264803 | Max Reductions: 0.263877 | Max Vector Ops: 0.001017
+Bidiag Kernel Fraction: Mean 0.9886 | Min 0.9752 | Max 0.9995
+Bidiag Ax (max): All Gather: 0.026859 | Computation: 5.311653 | Reduce Scatter: 0.000000 | Total: 5.329038
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 5.318893 | Reduce Scatter: 0.287271 | Total: 5.324811
+Experiment: 2000x2000x200x200 1024 Ax ranks rrp
+Max All Gather: 0.002030 | Max Computation: 0.532108
+Experiment: 2000x2000x200x200 1024 ATx ranks rrp
+Max Computation: 0.531097 | Max Reduce Scatter: 0.002691
+Experiment: 2000x2000x200x200 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 2.000004577552430e+05 | Alpha Sum: 3.986518545476749e+05 | Beta Sum: 3.136654010610450e+05
+Bidiag Max Total: 10.659829 | Max Kernel: 10.653872 | Max Other: 0.267105 | Max Reductions: 0.265878 | Max Vector Ops: 0.001023
+Bidiag Kernel Fraction: Mean 0.9885 | Min 0.9749 | Max 0.9995
+Bidiag Ax (max): All Gather: 0.028791 | Computation: 5.311962 | Reduce Scatter: 0.000000 | Total: 5.329172
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 5.317485 | Reduce Scatter: 0.280558 | Total: 5.326020
+Experiment: 2000x2000x200x200 1024 Ax ranks bcp
+Max All Gather: 0.000351 | Max Computation: 0.548127 | Max Reduce Scatter: 0.002451
+Experiment: 2000x2000x200x200 1024 ATx ranks bcp
+Max All Gather: 0.001498 | Max Computation: 0.544599 | Max Reduce Scatter: 0.000407
+Experiment: 2000x2000x200x200 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 2.000004577552430e+05 | Alpha Sum: 3.977913014196559e+05 | Beta Sum: 3.139770911354623e+05
+Bidiag Max Total: 10.967773 | Max Kernel: 10.965532 | Max Other: 0.548542 | Max Reductions: 0.547605 | Max Vector Ops: 0.001162
+Bidiag Kernel Fraction: Mean 0.9774 | Min 0.9500 | Max 0.9998
+Bidiag Ax (max): All Gather: 0.003873 | Computation: 5.489811 | Reduce Scatter: 0.172790 | Total: 5.496139
+Bidiag ATx (max): All Gather: 0.029058 | Computation: 5.448407 | Reduce Scatter: 0.604044 | Total: 5.469476
+Experiment: 200x200x2000x2000 1024 Ax ranks wbp
+Max All Gather: 0.085496 | Max Computation: 0.481886
+Experiment: 200x200x2000x2000 1024 ATx ranks wbp
+Max Computation: 0.550038 | Max Reduce Scatter: 0.304715
+Experiment: 200x200x2000x2000 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 2.000004579934531e+05 | Alpha Sum: 2.988933983012621e+05 | Beta Sum: 4.656628417422073e+05
+Bidiag Max Total: 13.813750 | Max Kernel: 13.799545 | Max Other: 0.403682 | Max Reductions: 0.403054 | Max Vector Ops: 0.000835
+Bidiag Kernel Fraction: Mean 0.9838 | Min 0.9708 | Max 0.9990
+Bidiag Ax (max): All Gather: 0.908286 | Computation: 4.800611 | Reduce Scatter: 0.000000 | Total: 5.704758
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 5.745325 | Reduce Scatter: 2.953189 | Total: 8.101946
+Experiment: 200x200x2000x2000 1024 Ax ranks rrp
+Max All Gather: 0.023411 | Max Computation: 0.734915 | Max Reduce Scatter: 0.000100
+Experiment: 200x200x2000x2000 1024 ATx ranks rrp
+Max All Gather: 0.000112 | Max Computation: 0.764445 | Max Reduce Scatter: 0.053742
+Experiment: 200x200x2000x2000 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 2.000004579934531e+05 | Alpha Sum: 3.172758764329257e+05 | Beta Sum: 4.638944837925057e+05
+Bidiag Max Total: 15.664917 | Max Kernel: 15.656565 | Max Other: 6.999250 | Max Reductions: 6.998389 | Max Vector Ops: 0.000816
+Bidiag Kernel Fraction: Mean 0.7494 | Min 0.5532 | Max 0.9995
+Bidiag Ax (max): All Gather: 0.271473 | Computation: 7.358066 | Reduce Scatter: 3.632296 | Total: 7.624008
+Bidiag ATx (max): All Gather: 0.000953 | Computation: 7.757598 | Reduce Scatter: 3.921506 | Total: 8.035595
+Experiment: 200x200x2000x2000 1024 Ax ranks bcp
+Max All Gather: 0.011325 | Max Computation: 0.619122 | Max Reduce Scatter: 0.000099
+Experiment: 200x200x2000x2000 1024 ATx ranks bcp
+Max All Gather: 0.000158 | Max Computation: 0.632555 | Max Reduce Scatter: 0.032986
+Experiment: 200x200x2000x2000 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 2.000004579934532e+05 | Alpha Sum: 3.587351328086426e+05 | Beta Sum: 4.550534789979624e+05
+Bidiag Max Total: 12.804699 | Max Kernel: 12.790956 | Max Other: 3.295753 | Max Reductions: 3.295188 | Max Vector Ops: 0.000773
+Bidiag Kernel Fraction: Mean 0.8742 | Min 0.7426 | Max 0.9989
+Bidiag Ax (max): All Gather: 0.112647 | Computation: 6.199034 | Reduce Scatter: 0.195596 | Total: 6.304005
+Bidiag ATx (max): All Gather: 0.001582 | Computation: 6.404987 | Reduce Scatter: 3.497507 | Total: 6.490974
+Experiment: 900x900x500x500 1024 Ax ranks wbp
+Max All Gather: 0.011613 | Max Computation: 0.647362
+Experiment: 900x900x500x500 1024 ATx ranks wbp
+Max Computation: 0.660900 | Max Reduce Scatter: 0.019238
+Experiment: 900x900x500x500 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 2.249998092460284e+05 | Alpha Sum: 4.771391188423957e+05 | Beta Sum: 4.098179168663792e+05
+Bidiag Max Total: 13.224049 | Max Kernel: 13.201526 | Max Other: 0.485618 | Max Reductions: 0.485060 | Max Vector Ops: 0.000693
+Bidiag Kernel Fraction: Mean 0.9811 | Min 0.9633 | Max 0.9983
+Bidiag Ax (max): All Gather: 0.175913 | Computation: 6.452570 | Reduce Scatter: 0.000000 | Total: 6.582131
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 6.586687 | Reduce Scatter: 0.473529 | Total: 6.621564
+Experiment: 900x900x500x500 1024 Ax ranks rrp
+Max All Gather: 0.011756 | Max Computation: 0.740783 | Max Reduce Scatter: 0.000075
+Experiment: 900x900x500x500 1024 ATx ranks rrp
+Max All Gather: 0.000092 | Max Computation: 0.751607 | Max Reduce Scatter: 0.016378
+Experiment: 900x900x500x500 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 2.249998092460284e+05 | Alpha Sum: 4.442299220044019e+05 | Beta Sum: 4.180052388024190e+05
+Bidiag Max Total: 15.180080 | Max Kernel: 15.121296 | Max Other: 4.008743 | Max Reductions: 4.007883 | Max Vector Ops: 0.000816
+Bidiag Kernel Fraction: Mean 0.9244 | Min 0.7359 | Max 0.9961
+Bidiag Ax (max): All Gather: 0.165434 | Computation: 7.404603 | Reduce Scatter: 0.276235 | Total: 7.530402
+Bidiag ATx (max): All Gather: 0.001851 | Computation: 7.489493 | Reduce Scatter: 4.038667 | Total: 7.603145
+Experiment: 900x900x500x500 1024 Ax ranks bcp
+Max All Gather: 0.001039 | Max Computation: 0.684693 | Max Reduce Scatter: 0.000358
+Experiment: 900x900x500x500 1024 ATx ranks bcp
+Max All Gather: 0.001819 | Max Computation: 0.681923 | Max Reduce Scatter: 0.002301
+Experiment: 900x900x500x500 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 2.249998092460284e+05 | Alpha Sum: 4.554793509497312e+05 | Beta Sum: 3.907571064874271e+05
+Bidiag Max Total: 13.697792 | Max Kernel: 13.695257 | Max Other: 0.526050 | Max Reductions: 0.525462 | Max Vector Ops: 0.000828
+Bidiag Kernel Fraction: Mean 0.9776 | Min 0.9616 | Max 0.9998
+Bidiag Ax (max): All Gather: 0.018814 | Computation: 6.842052 | Reduce Scatter: 0.253801 | Total: 6.855367
+Bidiag ATx (max): All Gather: 0.005120 | Computation: 6.831563 | Reduce Scatter: 0.483172 | Total: 6.840116
+Experiment: 9000x9000x50x50 1024 Ax ranks wbp
+Max All Gather: 0.000483 | Max Computation: 0.697584
+Experiment: 9000x9000x50x50 1024 ATx ranks wbp
+Max Computation: 0.696751 | Max Reduce Scatter: 0.000338
+Experiment: 9000x9000x50x50 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 2.250146111998030e+05 | Alpha Sum: 5.023372046908722e+05 | Beta Sum: 3.379024718835605e+05
+Bidiag Max Total: 13.968709 | Max Kernel: 13.961810 | Max Other: 0.357449 | Max Reductions: 0.346254 | Max Vector Ops: 0.013548
+Bidiag Kernel Fraction: Mean 0.9891 | Min 0.9744 | Max 0.9995
+Bidiag Ax (max): All Gather: 0.004681 | Computation: 6.975421 | Reduce Scatter: 0.000000 | Total: 6.979007
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 6.980875 | Reduce Scatter: 0.361908 | Total: 6.983690
+Experiment: 9000x9000x50x50 1024 Ax ranks rrp
+Max All Gather: 0.000484 | Max Computation: 0.697353
+Experiment: 9000x9000x50x50 1024 ATx ranks rrp
+Max Computation: 0.696935 | Max Reduce Scatter: 0.000336
+Experiment: 9000x9000x50x50 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 2.250146111998030e+05 | Alpha Sum: 5.023372046908722e+05 | Beta Sum: 3.379024718835605e+05
+Bidiag Max Total: 13.986287 | Max Kernel: 13.972030 | Max Other: 0.377456 | Max Reductions: 0.365849 | Max Vector Ops: 0.013815
+Bidiag Kernel Fraction: Mean 0.9882 | Min 0.9730 | Max 0.9990
+Bidiag Ax (max): All Gather: 0.004935 | Computation: 6.980364 | Reduce Scatter: 0.000000 | Total: 6.983432
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 6.982626 | Reduce Scatter: 0.368555 | Total: 6.990384
+Experiment: 9000x9000x50x50 1024 Ax ranks bcp
+Max All Gather: 0.000592 | Max Computation: 0.620272 | Max Reduce Scatter: 0.040264
+Experiment: 9000x9000x50x50 1024 ATx ranks bcp
+Max All Gather: 0.031799 | Max Computation: 0.605359 | Max Reduce Scatter: 0.000149
+Experiment: 9000x9000x50x50 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 2.250146111998030e+05 | Alpha Sum: 5.091648406711872e+05 | Beta Sum: 3.314566216353528e+05
+Bidiag Max Total: 12.822775 | Max Kernel: 12.792646 | Max Other: 0.851433 | Max Reductions: 0.847428 | Max Vector Ops: 0.005675
+Bidiag Kernel Fraction: Mean 0.9664 | Min 0.9336 | Max 0.9977
+Bidiag Ax (max): All Gather: 0.002504 | Computation: 6.312506 | Reduce Scatter: 0.873999 | Total: 6.357929
+Bidiag ATx (max): All Gather: 0.484315 | Computation: 6.024171 | Reduce Scatter: 1.376209 | Total: 6.434841
+Experiment: 650x650x650x650 1024 Ax ranks wbp
+Max All Gather: 0.021351 | Max Computation: 0.557749
+Experiment: 650x650x650x650 1024 ATx ranks wbp
+Max Computation: 0.553794 | Max Reduce Scatter: 0.030623
+Experiment: 650x650x650x650 1024 bidiag ranks wbp
+Bidiag Steps: 10 | Sigma1: 2.112497333413950e+05 | Alpha Sum: 4.081664753411579e+05 | Beta Sum: 3.450169838466664e+05
+Bidiag Max Total: 11.443264 | Max Kernel: 11.424088 | Max Other: 0.637838 | Max Reductions: 0.637069 | Max Vector Ops: 0.000733
+Bidiag Kernel Fraction: Mean 0.9760 | Min 0.9443 | Max 0.9983
+Bidiag Ax (max): All Gather: 0.289929 | Computation: 5.521093 | Reduce Scatter: 0.000000 | Total: 5.719321
+Bidiag ATx (max): All Gather: 0.000000 | Computation: 5.600027 | Reduce Scatter: 0.476001 | Total: 5.715566
+Experiment: 650x650x650x650 1024 Ax ranks rrp
+Max All Gather: 0.020797 | Max Computation: 0.878530 | Max Reduce Scatter: 0.000083
+Experiment: 650x650x650x650 1024 ATx ranks rrp
+Max All Gather: 0.000095 | Max Computation: 0.896673 | Max Reduce Scatter: 0.027151
+Experiment: 650x650x650x650 1024 bidiag ranks rrp
+Bidiag Steps: 10 | Sigma1: 2.112497333413950e+05 | Alpha Sum: 5.914751880197404e+05 | Beta Sum: 2.090766731345961e+05
+Bidiag Max Total: 18.196829 | Max Kernel: 18.176653 | Max Other: 4.852047 | Max Reductions: 4.851370 | Max Vector Ops: 0.000721
+Bidiag Kernel Fraction: Mean 0.8097 | Min 0.7334 | Max 0.9989
+Bidiag Ax (max): All Gather: 0.290279 | Computation: 8.821785 | Reduce Scatter: 0.513283 | Total: 9.062338
+Bidiag ATx (max): All Gather: 0.000954 | Computation: 8.959753 | Reduce Scatter: 4.885715 | Total: 9.114853
+Experiment: 650x650x650x650 1024 Ax ranks bcp
+Max All Gather: 0.001792 | Max Computation: 0.629846 | Max Reduce Scatter: 0.000207
+Experiment: 650x650x650x650 1024 ATx ranks bcp
+Max All Gather: 0.001575 | Max Computation: 0.629180 | Max Reduce Scatter: 0.003771
+Experiment: 650x650x650x650 1024 bidiag ranks bcp
+Bidiag Steps: 10 | Sigma1: 2.112497333413951e+05 | Alpha Sum: 4.190482403266094e+05 | Beta Sum: 3.439778156203293e+05
+Bidiag Max Total: 12.635224 | Max Kernel: 12.632097 | Max Other: 0.757773 | Max Reductions: 0.757211 | Max Vector Ops: 0.000772
+Bidiag Kernel Fraction: Mean 0.9549 | Min 0.9400 | Max 0.9998
+Bidiag Ax (max): All Gather: 0.032287 | Computation: 6.296830 | Reduce Scatter: 0.207382 | Total: 6.319762
+Bidiag ATx (max): All Gather: 0.013052 | Computation: 6.302837 | Reduce Scatter: 0.809355 | Total: 6.312459
