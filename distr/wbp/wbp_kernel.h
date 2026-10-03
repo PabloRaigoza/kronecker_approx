@@ -6,36 +6,76 @@
 #include <cmath>
 #include <assert.h>
 
+// ------------------------------------------------------------------
+// Single-shot kernels used by both the benchmarks and Golub-Kahan.
+//   do_ax : v_send (owned v slice) -> u_send (owned u slice)
+//   do_atx: u_send (owned u slice) -> v_send (owned v slice)
+// With sync=true every phase is preceded by a barrier so per-phase
+// timings are not polluted by load imbalance from the previous phase.
+// ------------------------------------------------------------------
+void do_ax(WBPContext* ctx, KernelTimers* t, bool sync) {
+    if (sync) MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    MPI_Allgatherv(ctx->v_send, ctx->v_send_size, MPI_DOUBLE,
+           ctx->v_recv, ctx->recvcounts_v, ctx->displs_v, MPI_DOUBLE,
+           MPI_COMM_WORLD);
+    double t1 = MPI_Wtime();
+
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    cblas_dgemv(CblasRowMajor, CblasNoTrans,
+                ctx->num_local_blocks, // rows of local_A
+                ctx->m2 * ctx->n2,     // cols of local_A
+                1.0,                   // alpha
+                ctx->A_local,          // local_A
+                ctx->m2 * ctx->n2,     // lda
+                ctx->v_recv,          // x
+                1,                     // incx
+                0.0,                   // beta
+                ctx->u_send,          // y
+                1);                    // incy
+    double t2 = MPI_Wtime();
+
+    t->all_gather += t1 - t0;
+    t->computation += t2 - t1;
+}
+
+void do_atx(WBPContext* ctx, KernelTimers* t, bool sync) {
+    if (sync) MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    // BLAS quick-returns without writing y when this rank owns no rows
+    if (ctx->num_local_blocks == 0) memset(ctx->v_recv, 0, (size_t)ctx->v_recv_size * sizeof(double));
+    cblas_dgemv(CblasRowMajor, CblasTrans,
+                ctx->num_local_blocks, // rows of local_A
+                ctx->m2 * ctx->n2,     // cols of local_A
+                1.0,                   // alpha
+                ctx->A_local,          // local_A
+                ctx->m2 * ctx->n2,     // lda
+                ctx->u_send,          // x
+                1,                     // incx
+                0.0,                   // beta
+                ctx->v_recv,          // y
+                1);                    // incy
+    double t1 = MPI_Wtime();
+
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    MPI_Reduce_scatter(ctx->v_recv, ctx->v_send, ctx->recvcounts_v, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    double t2 = MPI_Wtime();
+
+    t->computation += t1 - t0;
+    t->reduce_scatter += t2 - t1;
+}
+
+OwnedVecs owned_vecs(WBPContext* ctx) {
+    return { ctx->u_send, ctx->u_send_size, ctx->u_gidx.data(),
+             ctx->v_send, ctx->v_send_size, ctx->v_gidx.data(), MPI_COMM_WORLD };
+}
+
 void wbp_ax(WBPContext* ctx, int num_trails, bool per_rank_timings) {
-    double total_all_gather_time = 0.0;
-    double total_computation_time = 0.0;
-    for (int trial = 0; trial < num_trails; trial++) {
-        MPI_Barrier(MPI_COMM_WORLD);
-        double all_gather_start = MPI_Wtime();
-        MPI_Allgatherv(ctx->v_send, ctx->v_send_size, MPI_DOUBLE,
-               ctx->v_recv, ctx->recvcounts_v, ctx->displs_v, MPI_DOUBLE,
-               MPI_COMM_WORLD);
-        total_all_gather_time += (MPI_Wtime() - all_gather_start);
+    KernelTimers t;
+    for (int trial = 0; trial < num_trails; trial++) do_ax(ctx, &t, true);
 
-        MPI_Barrier(MPI_COMM_WORLD);
-        
-        double computation_start = MPI_Wtime();
-        cblas_dgemv(CblasRowMajor, CblasNoTrans,
-                    ctx->num_local_blocks, // rows of local_A
-                    ctx->m2 * ctx->n2,     // cols of local_A
-                    1.0,                   // alpha
-                    ctx->A_local,          // local_A
-                    ctx->m2 * ctx->n2,     // lda
-                    ctx->v_recv,          // x
-                    1,                     // incx
-                    0.0,                   // beta
-                    ctx->u_send,          // y
-                    1);                    // incy
-        total_computation_time += (MPI_Wtime() - computation_start);
-    }
-
-    double local_all_gather_time = total_all_gather_time / num_trails;
-    double local_computation_time = total_computation_time / num_trails;
+    double local_all_gather_time = t.all_gather / num_trails;
+    double local_computation_time = t.computation / num_trails;
 
     double max_all_gather = 0.0, max_computation = 0.0;
     MPI_Reduce(&local_all_gather_time, &max_all_gather, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -52,31 +92,11 @@ void wbp_ax(WBPContext* ctx, int num_trails, bool per_rank_timings) {
 }
 
 void wbp_atx(WBPContext* ctx, int num_trails, bool per_rank_timings) {
-    double total_computation_time = 0.0;
-    double total_reduce_scatter_time = 0.0;
-    for (int trial = 0; trial < num_trails; trial++) {
-        double computation_start = MPI_Wtime();
-        cblas_dgemv(CblasRowMajor, CblasTrans,
-                    ctx->num_local_blocks, // rows of local_A
-                    ctx->m2 * ctx->n2,     // cols of local_A
-                    1.0,                   // alpha
-                    ctx->A_local,          // local_A
-                    ctx->m2 * ctx->n2,     // lda
-                    ctx->u_send,          // x
-                    1,                     // incx
-                    0.0,                   // beta
-                    ctx->v_recv,          // y
-                    1);                    // incy
-        total_computation_time += (MPI_Wtime() - computation_start);
+    KernelTimers t;
+    for (int trial = 0; trial < num_trails; trial++) do_atx(ctx, &t, true);
 
-        MPI_Barrier(MPI_COMM_WORLD);
-        double reduce_scatter_start = MPI_Wtime();
-        MPI_Reduce_scatter(ctx->v_recv, ctx->v_send, ctx->recvcounts_v, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        total_reduce_scatter_time += (MPI_Wtime() - reduce_scatter_start);
-    }
-
-    double local_computation_time = total_computation_time / num_trails;
-    double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
+    double local_computation_time = t.computation / num_trails;
+    double local_reduce_scatter_time = t.reduce_scatter / num_trails;
 
     double max_computation = 0.0, max_reduce_scatter = 0.0;
     MPI_Reduce(&local_computation_time, &max_computation, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);

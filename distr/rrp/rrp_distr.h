@@ -17,7 +17,10 @@ struct RRPContext {
     int cols_owned_main, cols_owned_edge;
     double *A_local;
     int A_local_size;
-    
+
+    // v_send_main and v_send_edge are adjacent pieces of one allocation
+    // (v_send), so this rank's owned v slice is contiguous.
+    double *v_send;
     double *v_send_main;
     int v_send_main_size;
 
@@ -42,6 +45,7 @@ struct RRPContext {
     int v_main_rank, v_main_size;
     int v_edge_rank, v_edge_size;
     int u_rank, u_size;
+    std::vector<long> u_gidx, v_gidx;  // global index of each u_send / v_send entry
 };
 
 void rrp_compute_state(RRPContext* ctx) {
@@ -55,11 +59,11 @@ void rrp_compute_state(RRPContext* ctx) {
             ctx->state[i].push_back(ctx->state[i][ctx->state[i].size() - 1]);
 }
 
-RRPContext rrp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2) {
+RRPContext rrp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2, uint64_t seed) {
     RRPContext ctx;
     ctx.simple_case = world_size <= n1;
     if (ctx.simple_case) {
-        ctx.wbp_ctx = wbp_distribute(world_rank, world_size, m1, n1, m2, n2);
+        ctx.wbp_ctx = wbp_distribute(world_rank, world_size, m1, n1, m2, n2, seed);
         return ctx;
     }
 
@@ -150,39 +154,46 @@ RRPContext rrp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     ctx.u_send_size = base_u_send_size + (ctx.u_rank < rem_u_send_size ? 1 : 0);
 
     ctx.A_local = (double*)malloc(ctx.A_local_size * sizeof(double));
-    ctx.v_send_main = (double*)malloc(ctx.v_send_main_size * sizeof(double));
+    ctx.v_send = (double*)malloc((size_t)(ctx.v_send_main_size + ctx.v_send_edge_size) * sizeof(double));
+    ctx.v_send_main = ctx.v_send;
+    ctx.v_send_edge = ctx.is_on_edge ? ctx.v_send + ctx.v_send_main_size : nullptr;
     ctx.v_recv = (double*)malloc((size_t)(ctx.v_recv_main_size + ctx.v_recv_edge_size) * sizeof(double));
-    if (ctx.is_on_edge) {
-        ctx.v_send_edge = (double*)malloc(ctx.v_send_edge_size * sizeof(double));
-    } else {
-        ctx.v_send_edge = nullptr;
-    }
     ctx.u_send = (double*)malloc(ctx.u_send_size * sizeof(double));
     ctx.u_recv = (double*)malloc(ctx.u_recv_size * sizeof(double));
-
-    for (size_t i = 0; i < ctx.A_local_size; i++)
-        ctx.A_local[i] = (double)world_rank;
-    for (size_t i = 0; i < ctx.v_send_main_size; i++)
-        ctx.v_send_main[i] = (double)world_rank;
-    for (size_t i = 0; i < ctx.v_send_edge_size; i++)
-        ctx.v_send_edge[i] = (double)world_rank;
-    for (size_t i = 0; i < ctx.u_send_size; i++)
-        ctx.u_send[i] = (double)world_rank;
-
-    // for (size_t i = 0; i < ctx.A_local_size; i++)
-    //     ctx.A_local[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < ctx.v_send_main_size; i++)
-    //     ctx.v_send_main[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < ctx.v_send_edge_size; i++)
-    //     ctx.v_send_edge[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < ctx.u_send_size; i++)
-    //     ctx.u_send[i] = (double)rand() / RAND_MAX;
 
     find_revcounts_displs(ctx.u_send_size, ctx.u_size, &ctx.recvcounts_u, &ctx.displs_u, ctx.u_comm);
     if (!ctx.is_on_edge_natural)
         find_revcounts_displs(ctx.v_send_main_size, ctx.v_main_size, &ctx.recvcounts_v_main, &ctx.displs_v_main, ctx.v_comm_main);
     if (ctx.is_on_edge)
         find_revcounts_displs(ctx.v_send_edge_size, ctx.v_edge_size, &ctx.recvcounts_v_edge, &ctx.displs_v_edge, ctx.v_comm_edge);
+
+    // Global index maps. Rows: this rank's block group owns Ã rows
+    // [inter_block_index*m1, (inter_block_index+1)*m1). Columns: chunk c
+    // of Ã's m2*n2 columns starts at m2 * sum(cols_per_rank[0..c)); the
+    // local columns are [main chunk | edge chunk (always the last chunk)].
+    int num_chunks = (int)ctx.state[0].size();
+    std::vector<long> chunk_offset(num_chunks + 1, 0);
+    for (int c = 0; c < num_chunks; c++)
+        chunk_offset[c + 1] = chunk_offset[c] + (long)m2 * cols_per_rank[c];
+
+    std::vector<long> row_gidx(ctx.u_recv_size);
+    for (int a = 0; a < ctx.u_recv_size; a++) row_gidx[a] = (long)inter_block_index * m1 + a;
+
+    std::vector<long> col_gidx(ctx.v_recv_main_size + ctx.v_recv_edge_size);
+    for (int b = 0; b < ctx.v_recv_main_size; b++) col_gidx[b] = chunk_offset[intra_block_index] + b;
+    for (int b = 0; b < ctx.v_recv_edge_size; b++) col_gidx[ctx.v_recv_main_size + b] = chunk_offset[num_chunks - 1] + b;
+
+    ctx.u_gidx.resize(ctx.u_send_size);
+    for (int i = 0; i < ctx.u_send_size; i++) ctx.u_gidx[i] = row_gidx[ctx.displs_u[ctx.u_rank] + i];
+    ctx.v_gidx.resize(ctx.v_send_main_size + ctx.v_send_edge_size);
+    for (int i = 0; i < ctx.v_send_main_size; i++)
+        ctx.v_gidx[i] = col_gidx[ctx.displs_v_main[ctx.v_main_rank] + i];
+    for (int i = 0; i < ctx.v_send_edge_size; i++)
+        ctx.v_gidx[ctx.v_send_main_size + i] = col_gidx[ctx.v_recv_main_size + ctx.displs_v_edge[ctx.v_edge_rank] + i];
+
+    fill_a_local(ctx.A_local, seed, row_gidx.data(), ctx.u_recv_size, col_gidx.data(), (int)col_gidx.size(), (uint64_t)m2 * n2);
+    fill_seeded_vec(ctx.v_send, ctx.v_gidx.data(), (int)ctx.v_gidx.size(), seed, STREAM_V_INIT);
+    fill_seeded_vec(ctx.u_send, ctx.u_gidx.data(), ctx.u_send_size, seed, STREAM_U_INIT);
 
     // if (world_rank == 0) {
     //     printf("RRP Distribution: m1=%d, n1=%d, m2=%d, n2=%d, world_size=%d\n", m1, n1, m2, n2, world_size);
@@ -342,10 +353,12 @@ void rrp_free_context(RRPContext* ctx) {
         return;
     }
     free(ctx->A_local);
-    free(ctx->v_send_main);
-    free(ctx->v_send_edge);
+    free(ctx->v_send);
+    free(ctx->v_recv);
     free(ctx->u_send);
     free(ctx->u_recv);
+    free(ctx->recvcounts_u);
+    free(ctx->displs_u);
     if (!ctx->is_on_edge_natural) {
         free(ctx->recvcounts_v_main);
         free(ctx->displs_v_main);

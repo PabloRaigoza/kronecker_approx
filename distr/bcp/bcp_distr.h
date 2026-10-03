@@ -30,6 +30,7 @@ struct BCPContext {
     int u_rank, u_size;
     std::vector<std::vector<int>> state;    
     std::vector<int> cols_per_rank;
+    std::vector<long> u_gidx, v_gidx;  // global index of each u_send / v_send entry
 };
 
 void bcp_split_each_rank(BCPContext* ctx, std::vector<std::vector<int>>& state, int& num_ranks) {
@@ -94,7 +95,7 @@ void bcp_split_columns(BCPContext* ctx, std::vector<std::vector<int>>& state, in
     num_ranks *= 2;
 }
 
-BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2) {
+BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2, uint64_t seed) {
     BCPContext ctx;
     ctx.world_rank = world_rank;
     ctx.world_size = world_size;
@@ -131,6 +132,11 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
         }
     }
 
+    // The doubling scheme creates num_ranks (a power of two) rank ids; any id
+    // >= world_size would own a piece of Ã that no process holds.
+    assert(num_ranks == ctx.world_size &&
+           "BCP requires world_size to be a power of two");
+
     int intra_block_index = -1, inter_block_index = -1;
     for (size_t i = 0; i < ctx.n1; i++) {
         for (size_t j = 0; j < ctx.state[i].size(); j++) {
@@ -160,10 +166,15 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
         ctx.cols_per_rank[i] = base_cols + (i < rem_cols ? 1 : 0);
     
     ctx.cols_owned_intra = ctx.cols_per_rank[intra_block_index];
-    ctx.cols_owned_inter = 0;
-    for (size_t i = 0; i < ctx.n1; i++)
-        if (ctx.state[i][intra_block_index] == world_rank)
-            ctx.cols_owned_inter++;
+    // Block groups (along n1) this rank owns, all at the same intra position
+    std::vector<int> inter_groups;
+    int total_appearances = 0;
+    for (size_t i = 0; i < ctx.n1; i++) {
+        if (ctx.state[i][intra_block_index] == world_rank) inter_groups.push_back(i);
+        total_appearances += std::count(ctx.state[i].begin(), ctx.state[i].end(), world_rank);
+    }
+    assert(total_appearances == (int)inter_groups.size());
+    ctx.cols_owned_inter = inter_groups.size();
 
     ctx.A_local_size = (size_t)ctx.m1 * (size_t)ctx.m2 * (size_t)ctx.cols_owned_intra * (size_t)ctx.cols_owned_inter;
     ctx.v_recv_size = (size_t)ctx.m2 * (size_t)ctx.cols_owned_intra;
@@ -185,20 +196,37 @@ BCPContext bcp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     ctx.v_send = (double*)malloc(ctx.v_send_size * sizeof(double));
     ctx.u_send = (double*)malloc(ctx.u_send_size * sizeof(double));
 
-    for (size_t i = 0; i < ctx.A_local_size; i++) ctx.A_local[i] = (double)world_rank;
-    for (size_t i = 0; i < (size_t)ctx.v_recv_size; i++) ctx.v_recv[i] = (double)world_rank;
-    for (size_t i = 0; i < (size_t)ctx.u_recv_size; i++) ctx.u_recv[i] = (double)world_rank;
-    for (size_t i = 0; i < (size_t)ctx.v_send_size; i++) ctx.v_send[i] = (double)world_rank;
-    for (size_t i = 0; i < (size_t)ctx.u_send_size; i++) ctx.u_send[i] = (double)world_rank;
-
-    // for (size_t i = 0; i < ctx.A_local_size; i++) ctx.A_local[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < (size_t)ctx.v_recv_size; i++) ctx.v_recv[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < (size_t)ctx.u_recv_size; i++) ctx.u_recv[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < (size_t)ctx.v_send_size; i++) ctx.v_send[i] = (double)rand() / RAND_MAX;
-    // for (size_t i = 0; i < (size_t)ctx.u_send_size; i++) ctx.u_send[i] = (double)rand() / RAND_MAX;
-
     find_revcounts_displs(ctx.v_send_size, ctx.v_size, &ctx.recvcounts_v, &ctx.displs_v, ctx.v_comm);
     find_revcounts_displs(ctx.u_send_size, ctx.u_size, &ctx.recvcounts_u, &ctx.displs_u, ctx.u_comm);
+
+    // Global index maps. Local row a lives in block group
+    // inter_groups[a / m1]; local columns are chunk intra_block_index of
+    // Ã's m2*n2 columns, which starts at m2 * sum(cols_per_rank[0..intra)).
+    std::vector<long> row_gidx(ctx.u_recv_size);
+    for (int a = 0; a < ctx.u_recv_size; a++)
+        row_gidx[a] = (long)inter_groups[a / m1] * m1 + a % m1;
+
+    long col_offset = 0;
+    for (int c = 0; c < intra_block_index; c++) col_offset += (long)m2 * ctx.cols_per_rank[c];
+    std::vector<long> col_gidx(ctx.v_recv_size);
+    for (int b = 0; b < ctx.v_recv_size; b++) col_gidx[b] = col_offset + b;
+
+    // Every rank in u_comm reduce-scatters u_recv elementwise, so they
+    // must all own exactly the same rows of Ã.
+    long row_sig[2] = { row_gidx.empty() ? -1 : row_gidx.front(), (long)row_gidx.size() };
+    long row_sig_min[2], row_sig_max[2];
+    MPI_Allreduce(row_sig, row_sig_min, 2, MPI_LONG, MPI_MIN, ctx.u_comm);
+    MPI_Allreduce(row_sig, row_sig_max, 2, MPI_LONG, MPI_MAX, ctx.u_comm);
+    assert(row_sig_min[0] == row_sig_max[0] && row_sig_min[1] == row_sig_max[1]);
+
+    ctx.u_gidx.resize(ctx.u_send_size);
+    for (int i = 0; i < ctx.u_send_size; i++) ctx.u_gidx[i] = row_gidx[ctx.displs_u[ctx.u_rank] + i];
+    ctx.v_gidx.resize(ctx.v_send_size);
+    for (int i = 0; i < ctx.v_send_size; i++) ctx.v_gidx[i] = col_gidx[ctx.displs_v[ctx.v_rank] + i];
+
+    fill_a_local(ctx.A_local, seed, row_gidx.data(), ctx.u_recv_size, col_gidx.data(), ctx.v_recv_size, (uint64_t)m2 * n2);
+    fill_seeded_vec(ctx.v_send, ctx.v_gidx.data(), ctx.v_send_size, seed, STREAM_V_INIT);
+    fill_seeded_vec(ctx.u_send, ctx.u_gidx.data(), ctx.u_send_size, seed, STREAM_U_INIT);
 
     return ctx;
 }

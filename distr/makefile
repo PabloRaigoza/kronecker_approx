@@ -12,6 +12,17 @@ cr:
 cp:
 	CC -O3 -o main main.cpp
 
+# Check every scheme's Ax/ATx and Golub-Kahan against the serial reference
+# (uneven RRP edges, WBP/RRP fallback, BCP power-of-two rank counts)
+verify:
+	mpicxx -O3 -o bin_main main.cpp -lopenblas
+	@for np in 3 7 13; do for alg in wbp rrp; do \
+		OPENBLAS_NUM_THREADS=1 mpirun --oversubscribe -x OPENBLAS_NUM_THREADS -np $$np ./bin_main 12 9 8 11 verify $$alg 7 30 || exit 1; \
+	done; done
+	@for np in 2 8 16; do \
+		OPENBLAS_NUM_THREADS=1 mpirun --oversubscribe -x OPENBLAS_NUM_THREADS -np $$np ./bin_main 12 9 8 11 verify bcp 7 30 || exit 1; \
+	done
+
 # Requires SLATE (github.com/icl-utk-edu/slate) + its blaspp/lapackpp deps.
 # Point SLATE_DIR at an install prefix with include/ and lib/ (e.g. a NERSC
 # "module load slate", or a site build), then `make baseline`.

@@ -8,54 +8,100 @@
 #include <cmath>
 #include <assert.h>
 
-void rrp_ax(RRPContext* ctx, int num_trails, bool per_rank_timings) {
-    if (ctx->simple_case) {
-        wbp_ax(&ctx->wbp_ctx, num_trails, per_rank_timings);
-        return;
+// ------------------------------------------------------------------
+// Single-shot kernels (see wbp_kernel.h for the contract).
+// Falls back to WBP when world_size <= n1.
+// ------------------------------------------------------------------
+void do_ax(RRPContext* ctx, KernelTimers* t, bool sync) {
+    if (ctx->simple_case) { do_ax(&ctx->wbp_ctx, t, sync); return; }
+
+    if (sync) MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    if (!ctx->is_on_edge_natural) {
+        MPI_Allgatherv(ctx->v_send_main, ctx->v_send_main_size, MPI_DOUBLE,
+                    ctx->v_recv, ctx->recvcounts_v_main, ctx->displs_v_main, MPI_DOUBLE,
+                    ctx->v_comm_main);
     }
-
-    double total_all_gather_time = 0.0;
-    double total_computation_time = 0.0;
-    double total_reduce_scatter_time = 0.0;
-    for (int trial = 0; trial < num_trails; trial++) {
-        MPI_Barrier(MPI_COMM_WORLD);
-        double all_gather_start = MPI_Wtime();
-        if (!ctx->is_on_edge_natural) {
-            MPI_Allgatherv(ctx->v_send_main, ctx->v_send_main_size, MPI_DOUBLE,
-                        ctx->v_recv, ctx->recvcounts_v_main, ctx->displs_v_main, MPI_DOUBLE,
-                        ctx->v_comm_main);
-        }
-        if (ctx->is_on_edge) {
-            MPI_Allgatherv(ctx->v_send_edge, ctx->v_send_edge_size, MPI_DOUBLE,
-                        ctx->v_recv + ctx->v_recv_main_size, ctx->recvcounts_v_edge, ctx->displs_v_edge, MPI_DOUBLE,
-                        ctx->v_comm_edge);
-        }
-        total_all_gather_time += (MPI_Wtime() - all_gather_start);
-
-        MPI_Barrier(MPI_COMM_WORLD);
-        double computation_start = MPI_Wtime();
-        cblas_dgemv(CblasRowMajor, CblasNoTrans,
-                    ctx->u_recv_size, // rows of local_A
-                    ctx->v_recv_main_size + ctx->v_recv_edge_size,     // cols of local_A
-                    1.0,                   // alpha
-                    ctx->A_local,          // local_A
-                    ctx->v_recv_main_size + ctx->v_recv_edge_size,     // lda
-                    ctx->v_recv,          // x
-                    1,                     // incx
-                    0.0,                   // beta
-                    ctx->u_recv,          // y
-                    1);                    // incy
-        total_computation_time += (MPI_Wtime() - computation_start);
-
-        MPI_Barrier(MPI_COMM_WORLD);
-        double reduce_scatter_start = MPI_Wtime();
-        MPI_Reduce_scatter(ctx->u_recv, ctx->u_send, ctx->recvcounts_u, MPI_DOUBLE, MPI_SUM, ctx->u_comm);
-        total_reduce_scatter_time += (MPI_Wtime() - reduce_scatter_start);
+    if (ctx->is_on_edge) {
+        MPI_Allgatherv(ctx->v_send_edge, ctx->v_send_edge_size, MPI_DOUBLE,
+                    ctx->v_recv + ctx->v_recv_main_size, ctx->recvcounts_v_edge, ctx->displs_v_edge, MPI_DOUBLE,
+                    ctx->v_comm_edge);
     }
+    double t1 = MPI_Wtime();
 
-    double local_all_gather_time = total_all_gather_time / num_trails;
-    double local_computation_time = total_computation_time / num_trails;
-    double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    // BLAS quick-returns without writing y when this rank owns no columns
+    if (ctx->v_recv_main_size + ctx->v_recv_edge_size == 0) memset(ctx->u_recv, 0, (size_t)ctx->u_recv_size * sizeof(double));
+    cblas_dgemv(CblasRowMajor, CblasNoTrans,
+                ctx->u_recv_size, // rows of local_A
+                ctx->v_recv_main_size + ctx->v_recv_edge_size,     // cols of local_A
+                1.0,                   // alpha
+                ctx->A_local,          // local_A
+                ctx->v_recv_main_size + ctx->v_recv_edge_size,     // lda
+                ctx->v_recv,          // x
+                1,                     // incx
+                0.0,                   // beta
+                ctx->u_recv,          // y
+                1);                    // incy
+    double t2 = MPI_Wtime();
+
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t2 = MPI_Wtime(); }
+    MPI_Reduce_scatter(ctx->u_recv, ctx->u_send, ctx->recvcounts_u, MPI_DOUBLE, MPI_SUM, ctx->u_comm);
+    double t3 = MPI_Wtime();
+
+    t->all_gather += t1 - t0;
+    t->computation += t2 - t1;
+    t->reduce_scatter += t3 - t2;
+}
+
+void do_atx(RRPContext* ctx, KernelTimers* t, bool sync) {
+    if (ctx->simple_case) { do_atx(&ctx->wbp_ctx, t, sync); return; }
+
+    if (sync) MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    MPI_Allgatherv(ctx->u_send, ctx->u_send_size, MPI_DOUBLE,
+           ctx->u_recv, ctx->recvcounts_u, ctx->displs_u, MPI_DOUBLE,
+           ctx->u_comm);
+    double t1 = MPI_Wtime();
+
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t1 = MPI_Wtime(); }
+    cblas_dgemv(CblasRowMajor, CblasTrans,
+                ctx->u_recv_size, // rows of local_A
+                ctx->v_recv_main_size + ctx->v_recv_edge_size,     // cols of local_A
+                1.0,                   // alpha
+                ctx->A_local,          // local_A
+                ctx->v_recv_main_size + ctx->v_recv_edge_size,     // lda
+                ctx->u_recv,          // x
+                1,                     // incx
+                0.0,                   // beta
+                ctx->v_recv,          // y
+                1);                    // incy
+    double t2 = MPI_Wtime();
+
+    if (sync) { MPI_Barrier(MPI_COMM_WORLD); t2 = MPI_Wtime(); }
+    if (!ctx->is_on_edge_natural) {
+        MPI_Reduce_scatter(ctx->v_recv, ctx->v_send_main, ctx->recvcounts_v_main, MPI_DOUBLE, MPI_SUM, ctx->v_comm_main);
+    }
+    if (ctx->is_on_edge) {
+        MPI_Reduce_scatter(ctx->v_recv + ctx->v_recv_main_size, ctx->v_send_edge, ctx->recvcounts_v_edge, MPI_DOUBLE, MPI_SUM, ctx->v_comm_edge);
+    }
+    double t3 = MPI_Wtime();
+
+    t->all_gather += t1 - t0;
+    t->computation += t2 - t1;
+    t->reduce_scatter += t3 - t2;
+}
+
+OwnedVecs owned_vecs(RRPContext* ctx) {
+    if (ctx->simple_case) return owned_vecs(&ctx->wbp_ctx);
+    return { ctx->u_send, ctx->u_send_size, ctx->u_gidx.data(),
+             ctx->v_send, ctx->v_send_main_size + ctx->v_send_edge_size, ctx->v_gidx.data(), MPI_COMM_WORLD };
+}
+
+static void rrp_print_timings(RRPContext* ctx, const KernelTimers& t, int num_trails, bool per_rank_timings) {
+    double local_all_gather_time = t.all_gather / num_trails;
+    double local_computation_time = t.computation / num_trails;
+    double local_reduce_scatter_time = t.reduce_scatter / num_trails;
 
     double max_all_gather = 0.0, max_computation = 0.0, max_reduce_scatter = 0.0;
     MPI_Reduce(&local_all_gather_time, &max_all_gather, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -72,66 +118,24 @@ void rrp_ax(RRPContext* ctx, int num_trails, bool per_rank_timings) {
     }
 }
 
+void rrp_ax(RRPContext* ctx, int num_trails, bool per_rank_timings) {
+    if (ctx->simple_case) {
+        wbp_ax(&ctx->wbp_ctx, num_trails, per_rank_timings);
+        return;
+    }
+    KernelTimers t;
+    for (int trial = 0; trial < num_trails; trial++) do_ax(ctx, &t, true);
+    rrp_print_timings(ctx, t, num_trails, per_rank_timings);
+}
+
 void rrp_atx(RRPContext* ctx, int num_trails, bool per_rank_timings) {
     if (ctx->simple_case) {
         wbp_atx(&ctx->wbp_ctx, num_trails, per_rank_timings);
         return;
     }
-
-    double total_all_gather_time = 0.0;
-    double total_computation_time = 0.0;
-    double total_reduce_scatter_time = 0.0;
-    for (int trial = 0; trial < num_trails; trial++) {
-        MPI_Barrier(MPI_COMM_WORLD);
-        double all_gather_start = MPI_Wtime();
-        MPI_Allgatherv(ctx->u_send, ctx->u_send_size, MPI_DOUBLE,
-               ctx->u_recv, ctx->recvcounts_u, ctx->displs_u, MPI_DOUBLE,
-               ctx->u_comm);
-        total_all_gather_time += (MPI_Wtime() - all_gather_start);
-
-        MPI_Barrier(MPI_COMM_WORLD);
-        double computation_start = MPI_Wtime();
-        cblas_dgemv(CblasRowMajor, CblasTrans,
-                    ctx->u_recv_size, // rows of local_A
-                    ctx->v_recv_main_size + ctx->v_recv_edge_size,     // cols of local_A
-                    1.0,                   // alpha
-                    ctx->A_local,          // local_A
-                    ctx->v_recv_main_size + ctx->v_recv_edge_size,     // lda
-                    ctx->u_recv,          // x
-                    1,                     // incx
-                    0.0,                   // beta
-                    ctx->v_recv,          // y
-                    1);                    // incy
-        total_computation_time += (MPI_Wtime() - computation_start);
-
-        MPI_Barrier(MPI_COMM_WORLD);
-        double reduce_scatter_start = MPI_Wtime();
-        if (!ctx->is_on_edge_natural) {
-            MPI_Reduce_scatter(ctx->v_recv, ctx->v_send_main, ctx->recvcounts_v_main, MPI_DOUBLE, MPI_SUM, ctx->v_comm_main);
-        }
-        if (ctx->is_on_edge) {
-            MPI_Reduce_scatter(ctx->v_recv + ctx->v_recv_main_size, ctx->v_send_edge, ctx->recvcounts_v_edge, MPI_DOUBLE, MPI_SUM, ctx->v_comm_edge);
-        }
-        total_reduce_scatter_time += (MPI_Wtime() - reduce_scatter_start);
-    }
-
-    double local_all_gather_time = total_all_gather_time / num_trails;
-    double local_computation_time = total_computation_time / num_trails;
-    double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
-
-    double max_all_gather = 0.0, max_computation = 0.0, max_reduce_scatter = 0.0;
-    MPI_Reduce(&local_all_gather_time, &max_all_gather, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&local_computation_time, &max_computation, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&local_reduce_scatter_time, &max_reduce_scatter, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-
-    if (ctx->world_rank == 0) {
-        printf("Max All Gather: %.6f | Max Computation: %.6f | Max Reduce Scatter: %.6f\n", max_all_gather, max_computation, max_reduce_scatter);
-    }
-
-    if (per_rank_timings) {
-        printf("Rank %d: Local All Gather Time: %.9f | Local Computation Time: %.9f | Local Reduce Scatter Time: %.9f\n",
-            ctx->world_rank, local_all_gather_time, local_computation_time, local_reduce_scatter_time);
-    }
+    KernelTimers t;
+    for (int trial = 0; trial < num_trails; trial++) do_atx(ctx, &t, true);
+    rrp_print_timings(ctx, t, num_trails, per_rank_timings);
 }
 
 void rrp_verify(RRPContext* ctx) {

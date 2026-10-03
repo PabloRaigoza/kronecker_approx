@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <mpi.h>
 #include <stdio.h>
+#include <vector>
 
 struct WBPContext {
     int world_rank, world_size;
@@ -18,9 +19,10 @@ struct WBPContext {
     int v_recv_size, u_recv_size;
     int *recvcounts_v, *displs_v;
     int *recvcounts_u, *displs_u;
+    std::vector<long> u_gidx, v_gidx;  // global index of each u_send / v_send entry
 };
 
-WBPContext wbp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2) {
+WBPContext wbp_distribute(int world_rank, int world_size, int m1, int n1, int m2, int n2, uint64_t seed) {
     WBPContext ctx;
     ctx.world_rank = world_rank;
     ctx.world_size = world_size;
@@ -50,18 +52,22 @@ WBPContext wbp_distribute(int world_rank, int world_size, int m1, int n1, int m2
     ctx.v_send = (double*)malloc((size_t)ctx.v_send_size * sizeof(double));
     ctx.u_send = (double*)malloc((size_t)ctx.u_send_size * sizeof(double));
 
-    // Initialize A_local and v_local with random values
-    for (int i = 0; i < ctx.A_local_size; i++) {
-        ctx.A_local[i] = (double)rand() / RAND_MAX;
-        if (i < ctx.v_send_size) ctx.v_send[i] = (double)rand() / RAND_MAX;
-        if (i < ctx.u_send_size) ctx.u_send[i] = (double)rand() / RAND_MAX;
-        // ctx.A_local[i] = (double)world_rank;
-        // if (i < ctx.v_send_size) ctx.v_send[i] = (double)world_rank;
-        // if (i < ctx.u_send_size) ctx.u_send[i] = (double)world_rank;
-    }
-
     find_revcounts_displs(ctx.v_send_size, world_size, &ctx.recvcounts_v, &ctx.displs_v, MPI_COMM_WORLD);
     find_revcounts_displs(ctx.u_send_size, world_size, &ctx.recvcounts_u, &ctx.displs_u, MPI_COMM_WORLD);
+
+    // This rank owns rows [row_offset, row_offset + num_local_blocks) of Ã and all columns
+    long row_offset = (long)world_rank * blocks_per_rank + (world_rank < remainder ? world_rank : remainder);
+    std::vector<long> row_gidx(ctx.u_recv_size), col_gidx(ctx.v_recv_size);
+    for (int a = 0; a < ctx.u_recv_size; a++) row_gidx[a] = row_offset + a;
+    for (int b = 0; b < ctx.v_recv_size; b++) col_gidx[b] = b;
+
+    ctx.u_gidx = row_gidx;
+    ctx.v_gidx.resize(ctx.v_send_size);
+    for (int i = 0; i < ctx.v_send_size; i++) ctx.v_gidx[i] = ctx.displs_v[world_rank] + i;
+
+    fill_a_local(ctx.A_local, seed, row_gidx.data(), ctx.u_recv_size, col_gidx.data(), ctx.v_recv_size, (uint64_t)m2 * n2);
+    fill_seeded_vec(ctx.v_send, ctx.v_gidx.data(), ctx.v_send_size, seed, STREAM_V_INIT);
+    fill_seeded_vec(ctx.u_send, ctx.u_gidx.data(), ctx.u_send_size, seed, STREAM_U_INIT);
 
     return ctx;
 }
