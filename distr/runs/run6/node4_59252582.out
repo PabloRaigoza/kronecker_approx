@@ -1,0 +1,72 @@
+Experiment: 100x100x100x100 512 Ax ranks wbp
+Max All Gather: 0.000598 | Max Computation: 0.000287
+Experiment: 100x100x100x100 512 ATx ranks wbp
+Max Computation: 0.000297 | Max Reduce Scatter: 0.000783
+Experiment: 100x100x100x100 512 Ax ranks rrp
+Max All Gather: 0.000342 | Max Computation: 0.000469 | Max Reduce Scatter: 0.000072
+Experiment: 100x100x100x100 512 ATx ranks rrp
+Max All Gather: 0.000045 | Max Computation: 0.000460 | Max Reduce Scatter: 0.000225
+Experiment: 100x100x100x100 512 Ax ranks bcp
+Max All Gather: 0.000113 | Max Computation: 0.000338 | Max Reduce Scatter: 0.000057
+Experiment: 100x100x100x100 512 ATx ranks bcp
+Max All Gather: 0.000033 | Max Computation: 0.000357 | Max Reduce Scatter: 0.000159
+Experiment: 475x475x475x475 512 Ax ranks wbp
+Max All Gather: 0.011585 | Max Computation: 0.309452
+Experiment: 475x475x475x475 512 ATx ranks wbp
+Max Computation: 0.316006 | Max Reduce Scatter: 0.016618
+Experiment: 475x475x475x475 512 Ax ranks rrp
+Max All Gather: 0.011416 | Max Computation: 0.334468 | Max Reduce Scatter: 0.000037
+Experiment: 475x475x475x475 512 ATx ranks rrp
+Max All Gather: 0.000836 | Max Computation: 0.346711 | Max Reduce Scatter: 0.014053
+Experiment: 475x475x475x475 512 Ax ranks bcp
+Max All Gather: 0.000820 | Max Computation: 0.360753 | Max Reduce Scatter: 0.000192
+Experiment: 475x475x475x475 512 ATx ranks bcp
+Max All Gather: 0.001203 | Max Computation: 0.361033 | Max Reduce Scatter: 0.001652
+Experiment: 200x200x1000x1000 512 Ax ranks wbp
+Max All Gather: 0.019477 | Max Computation: 0.237358
+Experiment: 200x200x1000x1000 512 ATx ranks wbp
+Max Computation: 0.255255 | Max Reduce Scatter: 0.068872
+Experiment: 200x200x1000x1000 512 Ax ranks rrp
+Max All Gather: 0.010377 | Max Computation: 0.325499 | Max Reduce Scatter: 0.000059
+Experiment: 200x200x1000x1000 512 ATx ranks rrp
+Max All Gather: 0.001246 | Max Computation: 0.335980 | Max Reduce Scatter: 0.022652
+Experiment: 200x200x1000x1000 512 Ax ranks bcp
+Max All Gather: 0.002494 | Max Computation: 0.262711 | Max Reduce Scatter: 0.000123
+Experiment: 200x200x1000x1000 512 ATx ranks bcp
+Max All Gather: 0.002047 | Max Computation: 0.268228 | Max Reduce Scatter: 0.006755
+Experiment: 1000x1000x200x200 512 Ax ranks wbp
+Max All Gather: 0.001905 | Max Computation: 0.265244
+Experiment: 1000x1000x200x200 512 ATx ranks wbp
+Max Computation: 0.266532 | Max Reduce Scatter: 0.004045
+Experiment: 1000x1000x200x200 512 Ax ranks rrp
+Max All Gather: 0.001881 | Max Computation: 0.265409
+Experiment: 1000x1000x200x200 512 ATx ranks rrp
+Max Computation: 0.266422 | Max Reduce Scatter: 0.004021
+Experiment: 1000x1000x200x200 512 Ax ranks bcp
+Max All Gather: 0.000236 | Max Computation: 0.273269 | Max Reduce Scatter: 0.001031
+Experiment: 1000x1000x200x200 512 ATx ranks bcp
+Max All Gather: 0.000629 | Max Computation: 0.272470 | Max Reduce Scatter: 0.000302
+Experiment: 600x600x400x400 512 Ax ranks wbp
+Max All Gather: 0.007305 | Max Computation: 0.368637
+Experiment: 600x600x400x400 512 ATx ranks wbp
+Max Computation: 0.378777 | Max Reduce Scatter: 0.014117
+Experiment: 600x600x400x400 512 Ax ranks rrp
+Max All Gather: 0.007382 | Max Computation: 0.370608
+Experiment: 600x600x400x400 512 ATx ranks rrp
+Max Computation: 0.379024 | Max Reduce Scatter: 0.014042
+Experiment: 600x600x400x400 512 Ax ranks bcp
+Max All Gather: 0.000564 | Max Computation: 0.394941 | Max Reduce Scatter: 0.000292
+Experiment: 600x600x400x400 512 ATx ranks bcp
+Max All Gather: 0.001204 | Max Computation: 0.395179 | Max Reduce Scatter: 0.001282
+Experiment: 400x400x600x600 512 Ax ranks wbp
+Max All Gather: 0.016510 | Max Computation: 0.345233
+Experiment: 400x400x600x600 512 ATx ranks wbp
+Max Computation: 0.354893 | Max Reduce Scatter: 0.024250
+Experiment: 400x400x600x600 512 Ax ranks rrp
+Max All Gather: 0.016118 | Max Computation: 0.444902 | Max Reduce Scatter: 0.000065
+Experiment: 400x400x600x600 512 ATx ranks rrp
+Max All Gather: 0.002325 | Max Computation: 0.457923 | Max Reduce Scatter: 0.020682
+Experiment: 400x400x600x600 512 Ax ranks bcp
+Max All Gather: 0.001349 | Max Computation: 0.400919 | Max Reduce Scatter: 0.000176
+Experiment: 400x400x600x600 512 ATx ranks bcp
+Max All Gather: 0.001283 | Max Computation: 0.401300 | Max Reduce Scatter: 0.003252
