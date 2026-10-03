@@ -1,0 +1,72 @@
+Experiment: 100x100x100x100 128 Ax ranks wbp
+Mean All Gather: 0.000406 | Mean Computation: 0.001122
+Experiment: 100x100x100x100 128 ATx ranks wbp
+Mean Computation: 0.001189 | Mean Reduce Scatter: 0.000211
+Experiment: 100x100x100x100 128 Ax ranks rrp
+Mean All Gather: 0.000476 | Mean Computation: 0.000955 | Mean Reduce Scatter: 0.000020
+Experiment: 100x100x100x100 128 ATx ranks rrp
+Mean All Gather: 0.000004 | Mean Computation: 0.000982 | Mean Reduce Scatter: 0.000495
+Experiment: 100x100x100x100 128 Ax ranks bcp
+Mean All Gather: 0.000062 | Mean Computation: 0.001134 | Mean Reduce Scatter: 0.000049
+Experiment: 100x100x100x100 128 ATx ranks bcp
+Mean All Gather: 0.000015 | Mean Computation: 0.001131 | Mean Reduce Scatter: 0.000197
+Experiment: 475x475x475x475 128 Ax ranks wbp
+Mean All Gather: 0.003793 | Mean Computation: 1.313460
+Experiment: 475x475x475x475 128 ATx ranks wbp
+Mean Computation: 1.318093 | Mean Reduce Scatter: 0.032793
+Experiment: 475x475x475x475 128 Ax ranks rrp
+Mean All Gather: 0.003840 | Mean Computation: 1.313426
+Experiment: 475x475x475x475 128 ATx ranks rrp
+Mean Computation: 1.317950 | Mean Reduce Scatter: 0.033304
+Experiment: 475x475x475x475 128 Ax ranks bcp
+Mean All Gather: 0.000747 | Mean Computation: 1.316221 | Mean Reduce Scatter: 0.008071
+Experiment: 475x475x475x475 128 ATx ranks bcp
+Mean All Gather: 0.000084 | Mean Computation: 1.312628 | Mean Reduce Scatter: 0.031299
+Experiment: 200x200x1000x1000 128 Ax ranks wbp
+Mean All Gather: 0.020961 | Mean Computation: 0.933704
+Experiment: 200x200x1000x1000 128 ATx ranks wbp
+Mean Computation: 0.968921 | Mean Reduce Scatter: 0.043385
+Experiment: 200x200x1000x1000 128 Ax ranks rrp
+Mean All Gather: 0.021037 | Mean Computation: 0.933812
+Experiment: 200x200x1000x1000 128 ATx ranks rrp
+Mean Computation: 0.968623 | Mean Reduce Scatter: 0.043706
+Experiment: 200x200x1000x1000 128 Ax ranks bcp
+Mean All Gather: 0.003885 | Mean Computation: 0.982391 | Mean Reduce Scatter: 0.005487
+Experiment: 200x200x1000x1000 128 ATx ranks bcp
+Mean All Gather: 0.000040 | Mean Computation: 0.995092 | Mean Reduce Scatter: 0.058261
+Experiment: 1000x1000x200x200 128 Ax ranks wbp
+Mean All Gather: 0.001178 | Mean Computation: 1.037666
+Experiment: 1000x1000x200x200 128 ATx ranks wbp
+Mean Computation: 1.036875 | Mean Reduce Scatter: 0.024367
+Experiment: 1000x1000x200x200 128 Ax ranks rrp
+Mean All Gather: 0.001176 | Mean Computation: 1.037761
+Experiment: 1000x1000x200x200 128 ATx ranks rrp
+Mean Computation: 1.036838 | Mean Reduce Scatter: 0.024229
+Experiment: 1000x1000x200x200 128 Ax ranks bcp
+Mean All Gather: 0.000157 | Mean Computation: 1.019352 | Mean Reduce Scatter: 0.006408
+Experiment: 1000x1000x200x200 128 ATx ranks bcp
+Mean All Gather: 0.000312 | Mean Computation: 1.016914 | Mean Reduce Scatter: 0.020488
+Experiment: 600x600x400x400 128 Ax ranks wbp
+Mean All Gather: 0.002523 | Mean Computation: 1.484499
+Experiment: 600x600x400x400 128 ATx ranks wbp
+Mean Computation: 1.486545 | Mean Reduce Scatter: 0.038164
+Experiment: 600x600x400x400 128 Ax ranks rrp
+Mean All Gather: 0.002686 | Mean Computation: 1.484348
+Experiment: 600x600x400x400 128 ATx ranks rrp
+Mean Computation: 1.486188 | Mean Reduce Scatter: 0.037933
+Experiment: 600x600x400x400 128 Ax ranks bcp
+Mean All Gather: 0.000485 | Mean Computation: 1.494597 | Mean Reduce Scatter: 0.010722
+Experiment: 600x600x400x400 128 ATx ranks bcp
+Mean All Gather: 0.000106 | Mean Computation: 1.490683 | Mean Reduce Scatter: 0.037737
+Experiment: 400x400x600x600 128 Ax ranks wbp
+Mean All Gather: 0.006646 | Mean Computation: 1.464711
+Experiment: 400x400x600x600 128 ATx ranks wbp
+Mean Computation: 1.482562 | Mean Reduce Scatter: 0.045991
+Experiment: 400x400x600x600 128 Ax ranks rrp
+Mean All Gather: 0.006641 | Mean Computation: 1.463588
+Experiment: 400x400x600x600 128 ATx ranks rrp
+Mean Computation: 1.483824 | Mean Reduce Scatter: 0.045036
+Experiment: 400x400x600x600 128 Ax ranks bcp
+Mean All Gather: 0.001141 | Mean Computation: 1.478471 | Mean Reduce Scatter: 0.008372
+Experiment: 400x400x600x600 128 ATx ranks bcp
+Mean All Gather: 0.000067 | Mean Computation: 1.476973 | Mean Reduce Scatter: 0.061799

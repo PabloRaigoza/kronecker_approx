@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=kron_node16
 #SBATCH --account=m4341
-#SBATCH --partition=cpu
 #SBATCH --constraint=cpu
 #SBATCH --qos=regular
 #SBATCH --nodes=16
