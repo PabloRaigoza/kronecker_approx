@@ -30,9 +30,9 @@ HEADER_PAT = re.compile(
     r"Experiment:\s+(\d+)x(\d+)x(\d+)x(\d+)\s+(\d+)\s+(\S+)\s+ranks\s+(\S+)"
 )
 MEAN_PAT = {
-    "all_gather":     re.compile(r"Mean All Gather:\s*([\d.]+)"),
-    "computation":    re.compile(r"Mean Computation:\s*([\d.]+)"),
-    "reduce_scatter": re.compile(r"Mean Reduce Scatter:\s*([\d.]+)"),
+    "all_gather":     re.compile(r"(?:Mean|Max) All Gather:\s*([\d.]+)"),
+    "computation":    re.compile(r"(?:Mean|Max) Computation:\s*([\d.]+)"),
+    "reduce_scatter": re.compile(r"(?:Mean|Max) Reduce Scatter:\s*([\d.]+)"),
 }
 RANK_LINE_PAT = re.compile(r"^Rank\s+(\d+):\s+(.+)")
 LOCAL_PAT = {

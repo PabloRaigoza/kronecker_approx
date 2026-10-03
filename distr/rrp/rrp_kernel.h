@@ -47,27 +47,26 @@ void rrp_ax(RRPContext* ctx, int num_trails, bool per_rank_timings) {
                     1);                    // incy
         total_computation_time += (MPI_Wtime() - computation_start);
 
+        MPI_Barrier(MPI_COMM_WORLD);
         double reduce_scatter_start = MPI_Wtime();
         MPI_Reduce_scatter(ctx->u_recv, ctx->u_send, ctx->recvcounts_u, MPI_DOUBLE, MPI_SUM, ctx->u_comm);
         total_reduce_scatter_time += (MPI_Wtime() - reduce_scatter_start);
     }
 
-    double total_all_gather = 0.0, total_computation = 0.0, total_reduce_scatter = 0.0;
-    MPI_Reduce(&total_all_gather_time, &total_all_gather, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&total_computation_time, &total_computation, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&total_reduce_scatter_time, &total_reduce_scatter, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    double local_all_gather_time = total_all_gather_time / num_trails;
+    double local_computation_time = total_computation_time / num_trails;
+    double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
+
+    double max_all_gather = 0.0, max_computation = 0.0, max_reduce_scatter = 0.0;
+    MPI_Reduce(&local_all_gather_time, &max_all_gather, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_computation_time, &max_computation, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_reduce_scatter_time, &max_reduce_scatter, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (ctx->world_rank == 0) {
-        total_all_gather /= num_trails * ctx->world_size;
-        total_computation /= num_trails * ctx->world_size;
-        total_reduce_scatter /= num_trails * ctx->world_size;
-        printf("Mean All Gather: %.6f | Mean Computation: %.6f | Mean Reduce Scatter: %.6f\n", total_all_gather, total_computation, total_reduce_scatter);
+        printf("Max All Gather: %.6f | Max Computation: %.6f | Max Reduce Scatter: %.6f\n", max_all_gather, max_computation, max_reduce_scatter);
     }
 
     if (per_rank_timings) {
-        double local_all_gather_time = total_all_gather_time / num_trails;
-        double local_computation_time = total_computation_time / num_trails;
-        double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
         printf("Rank %d: Local All Gather Time: %.9f | Local Computation Time: %.9f | Local Reduce Scatter Time: %.9f\n",
             ctx->world_rank, local_all_gather_time, local_computation_time, local_reduce_scatter_time);
     }
@@ -105,6 +104,7 @@ void rrp_atx(RRPContext* ctx, int num_trails, bool per_rank_timings) {
                     1);                    // incy
         total_computation_time += (MPI_Wtime() - computation_start);
 
+        MPI_Barrier(MPI_COMM_WORLD);
         double reduce_scatter_start = MPI_Wtime();
         if (!ctx->is_on_edge_natural) {
             MPI_Reduce_scatter(ctx->v_recv, ctx->v_send_main, ctx->recvcounts_v_main, MPI_DOUBLE, MPI_SUM, ctx->v_comm_main);
@@ -115,22 +115,20 @@ void rrp_atx(RRPContext* ctx, int num_trails, bool per_rank_timings) {
         total_reduce_scatter_time += (MPI_Wtime() - reduce_scatter_start);
     }
 
-    double total_all_gather = 0.0, total_computation = 0.0, total_reduce_scatter = 0.0;
-    MPI_Reduce(&total_all_gather_time, &total_all_gather, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&total_computation_time, &total_computation, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&total_reduce_scatter_time, &total_reduce_scatter, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    double local_all_gather_time = total_all_gather_time / num_trails;
+    double local_computation_time = total_computation_time / num_trails;
+    double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
+
+    double max_all_gather = 0.0, max_computation = 0.0, max_reduce_scatter = 0.0;
+    MPI_Reduce(&local_all_gather_time, &max_all_gather, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_computation_time, &max_computation, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_reduce_scatter_time, &max_reduce_scatter, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (ctx->world_rank == 0) {
-        total_all_gather /= num_trails * ctx->world_size;
-        total_computation /= num_trails * ctx->world_size;
-        total_reduce_scatter /= num_trails * ctx->world_size;
-        printf("Mean All Gather: %.6f | Mean Computation: %.6f | Mean Reduce Scatter: %.6f\n", total_all_gather, total_computation, total_reduce_scatter);
+        printf("Max All Gather: %.6f | Max Computation: %.6f | Max Reduce Scatter: %.6f\n", max_all_gather, max_computation, max_reduce_scatter);
     }
 
     if (per_rank_timings) {
-        double local_all_gather_time = total_all_gather_time / num_trails;
-        double local_computation_time = total_computation_time / num_trails;
-        double local_reduce_scatter_time = total_reduce_scatter_time / num_trails;
         printf("Rank %d: Local All Gather Time: %.9f | Local Computation Time: %.9f | Local Reduce Scatter Time: %.9f\n",
             ctx->world_rank, local_all_gather_time, local_computation_time, local_reduce_scatter_time);
     }
